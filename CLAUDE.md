@@ -46,7 +46,7 @@ Full DDL → `migrations/001_initial.sql`
 
 ## Development phases
 - **1 ✅ Core Gateway** — auth, Groq adapter, logging
-- **2** Provider Pool — Gemini + OpenRouter, circuit breaker, sliding-window rate limiter
+- **2 ✅ Provider Pool** — Gemini + OpenRouter, circuit breaker, sliding-window rate limiter
 - **3** Cache — response cache with TTL strategy
 - **4** Admin Panel — tRPC + Next.js UI (dashboard, projects CRUD, logs)
 - **5** Deploy — Northflank + Cloudflare, AES-256-GCM provider key encryption

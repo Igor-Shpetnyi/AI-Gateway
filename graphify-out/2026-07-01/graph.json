@@ -4,6 +4,116 @@
   "graph": {},
   "nodes": [
     {
+      "label": "migrate.ts",
+      "file_type": "code",
+      "source_file": "scripts/migrate.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "scripts_migrate",
+      "community": 6,
+      "norm_label": "migrate.ts"
+    },
+    {
+      "label": "__dirname",
+      "file_type": "code",
+      "source_file": "scripts/migrate.ts",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "scripts_migrate_dirname",
+      "community": 6,
+      "norm_label": "__dirname"
+    },
+    {
+      "label": "migrationsDir",
+      "file_type": "code",
+      "source_file": "scripts/migrate.ts",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "scripts_migrate_migrationsdir",
+      "community": 6,
+      "norm_label": "migrationsdir"
+    },
+    {
+      "label": "migrate()",
+      "file_type": "code",
+      "source_file": "scripts/migrate.ts",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "scripts_migrate_migrate",
+      "community": 6,
+      "norm_label": "migrate()"
+    },
+    {
+      "label": "circuit-breaker.ts",
+      "file_type": "code",
+      "source_file": "src/lib/circuit-breaker.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_lib_circuit_breaker",
+      "community": 5,
+      "norm_label": "circuit-breaker.ts"
+    },
+    {
+      "label": "failureCounters",
+      "file_type": "code",
+      "source_file": "src/lib/circuit-breaker.ts",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "src_lib_circuit_breaker_failurecounters",
+      "community": 5,
+      "norm_label": "failurecounters"
+    },
+    {
+      "label": "isCircuitOpen()",
+      "file_type": "code",
+      "source_file": "src/lib/circuit-breaker.ts",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "src_lib_circuit_breaker_iscircuitopen",
+      "community": 5,
+      "norm_label": "iscircuitopen()"
+    },
+    {
+      "label": "onProviderSuccess()",
+      "file_type": "code",
+      "source_file": "src/lib/circuit-breaker.ts",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "src_lib_circuit_breaker_onprovidersuccess",
+      "community": 5,
+      "norm_label": "onprovidersuccess()"
+    },
+    {
+      "label": "onProviderFailure()",
+      "file_type": "code",
+      "source_file": "src/lib/circuit-breaker.ts",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "src_lib_circuit_breaker_onproviderfailure",
+      "community": 5,
+      "norm_label": "onproviderfailure()"
+    },
+    {
+      "label": "gemini.ts",
+      "file_type": "code",
+      "source_file": "src/lib/providers/gemini.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_lib_providers_gemini",
+      "community": 4,
+      "norm_label": "gemini.ts"
+    },
+    {
+      "label": "geminiProvider",
+      "file_type": "code",
+      "source_file": "src/lib/providers/gemini.ts",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "src_lib_providers_gemini_geminiprovider",
+      "community": 4,
+      "norm_label": "geminiprovider"
+    },
+    {
       "label": "groq.ts",
       "file_type": "code",
       "source_file": "src/lib/providers/groq.ts",
@@ -24,124 +134,14 @@
       "norm_label": "groqprovider"
     },
     {
-      "label": "migrate.ts",
-      "file_type": "code",
-      "source_file": "scripts/migrate.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 6,
-      "norm_label": "migrate.ts",
-      "id": "scripts_migrate"
-    },
-    {
-      "label": "__dirname",
-      "file_type": "code",
-      "source_file": "scripts/migrate.ts",
-      "source_location": "L6",
-      "_origin": "ast",
-      "community": 6,
-      "norm_label": "__dirname",
-      "id": "scripts_migrate_dirname"
-    },
-    {
-      "label": "migrationsDir",
-      "file_type": "code",
-      "source_file": "scripts/migrate.ts",
-      "source_location": "L7",
-      "_origin": "ast",
-      "community": 6,
-      "norm_label": "migrationsdir",
-      "id": "scripts_migrate_migrationsdir"
-    },
-    {
-      "label": "migrate()",
-      "file_type": "code",
-      "source_file": "scripts/migrate.ts",
-      "source_location": "L9",
-      "_origin": "ast",
-      "community": 6,
-      "norm_label": "migrate()",
-      "id": "scripts_migrate_migrate"
-    },
-    {
-      "label": "circuit-breaker.ts",
-      "file_type": "code",
-      "source_file": "src/lib/circuit-breaker.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "circuit-breaker.ts",
-      "id": "src_lib_circuit_breaker"
-    },
-    {
-      "label": "failureCounters",
-      "file_type": "code",
-      "source_file": "src/lib/circuit-breaker.ts",
-      "source_location": "L7",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "failurecounters",
-      "id": "src_lib_circuit_breaker_failurecounters"
-    },
-    {
-      "label": "isCircuitOpen()",
-      "file_type": "code",
-      "source_file": "src/lib/circuit-breaker.ts",
-      "source_location": "L9",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "iscircuitopen()",
-      "id": "src_lib_circuit_breaker_iscircuitopen"
-    },
-    {
-      "label": "onProviderSuccess()",
-      "file_type": "code",
-      "source_file": "src/lib/circuit-breaker.ts",
-      "source_location": "L17",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "onprovidersuccess()",
-      "id": "src_lib_circuit_breaker_onprovidersuccess"
-    },
-    {
-      "label": "onProviderFailure()",
-      "file_type": "code",
-      "source_file": "src/lib/circuit-breaker.ts",
-      "source_location": "L28",
-      "_origin": "ast",
-      "community": 5,
-      "norm_label": "onproviderfailure()",
-      "id": "src_lib_circuit_breaker_onproviderfailure"
-    },
-    {
-      "label": "gemini.ts",
-      "file_type": "code",
-      "source_file": "src/lib/providers/gemini.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 4,
-      "norm_label": "gemini.ts",
-      "id": "src_lib_providers_gemini"
-    },
-    {
-      "label": "geminiProvider",
-      "file_type": "code",
-      "source_file": "src/lib/providers/gemini.ts",
-      "source_location": "L8",
-      "_origin": "ast",
-      "community": 4,
-      "norm_label": "geminiprovider",
-      "id": "src_lib_providers_gemini_geminiprovider"
-    },
-    {
       "label": "index.ts",
       "file_type": "code",
       "source_file": "src/lib/providers/index.ts",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "src_lib_providers_index",
       "community": 4,
-      "norm_label": "index.ts",
-      "id": "src_lib_providers_index"
+      "norm_label": "index.ts"
     },
     {
       "label": "providers",
@@ -149,9 +149,9 @@
       "source_file": "src/lib/providers/index.ts",
       "source_location": "L7",
       "_origin": "ast",
+      "id": "src_lib_providers_index_providers",
       "community": 4,
-      "norm_label": "providers",
-      "id": "src_lib_providers_index_providers"
+      "norm_label": "providers"
     },
     {
       "label": "openrouter.ts",
@@ -159,9 +159,9 @@
       "source_file": "src/lib/providers/openrouter.ts",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "src_lib_providers_openrouter",
       "community": 4,
-      "norm_label": "openrouter.ts",
-      "id": "src_lib_providers_openrouter"
+      "norm_label": "openrouter.ts"
     },
     {
       "label": "openrouterProvider",
@@ -169,9 +169,9 @@
       "source_file": "src/lib/providers/openrouter.ts",
       "source_location": "L7",
       "_origin": "ast",
+      "id": "src_lib_providers_openrouter_openrouterprovider",
       "community": 4,
-      "norm_label": "openrouterprovider",
-      "id": "src_lib_providers_openrouter_openrouterprovider"
+      "norm_label": "openrouterprovider"
     },
     {
       "label": "types.ts",
@@ -179,9 +179,9 @@
       "source_file": "src/lib/providers/types.ts",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "src_lib_providers_types",
       "community": 4,
-      "norm_label": "types.ts",
-      "id": "src_lib_providers_types"
+      "norm_label": "types.ts"
     },
     {
       "label": "ChatMessage",
@@ -189,9 +189,9 @@
       "source_file": "src/lib/providers/types.ts",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "src_lib_providers_types_chatmessage",
       "community": 4,
-      "norm_label": "chatmessage",
-      "id": "src_lib_providers_types_chatmessage"
+      "norm_label": "chatmessage"
     },
     {
       "label": "ChatOptions",
@@ -199,9 +199,9 @@
       "source_file": "src/lib/providers/types.ts",
       "source_location": "L6",
       "_origin": "ast",
+      "id": "src_lib_providers_types_chatoptions",
       "community": 4,
-      "norm_label": "chatoptions",
-      "id": "src_lib_providers_types_chatoptions"
+      "norm_label": "chatoptions"
     },
     {
       "label": "ChatResponse",
@@ -209,9 +209,9 @@
       "source_file": "src/lib/providers/types.ts",
       "source_location": "L12",
       "_origin": "ast",
+      "id": "src_lib_providers_types_chatresponse",
       "community": 4,
-      "norm_label": "chatresponse",
-      "id": "src_lib_providers_types_chatresponse"
+      "norm_label": "chatresponse"
     },
     {
       "label": "ProviderAdapter",
@@ -219,9 +219,9 @@
       "source_file": "src/lib/providers/types.ts",
       "source_location": "L21",
       "_origin": "ast",
+      "id": "src_lib_providers_types_provideradapter",
       "community": 4,
-      "norm_label": "provideradapter",
-      "id": "src_lib_providers_types_provideradapter"
+      "norm_label": "provideradapter"
     },
     {
       "label": ".isConfigured()",
@@ -229,9 +229,9 @@
       "source_file": "src/lib/providers/types.ts",
       "source_location": "L28",
       "_origin": "ast",
+      "id": "src_lib_providers_types_provideradapter_isconfigured",
       "community": 4,
-      "norm_label": ".isconfigured()",
-      "id": "src_lib_providers_types_provideradapter_isconfigured"
+      "norm_label": ".isconfigured()"
     },
     {
       "label": ".chat()",
@@ -239,9 +239,9 @@
       "source_file": "src/lib/providers/types.ts",
       "source_location": "L29",
       "_origin": "ast",
+      "id": "src_lib_providers_types_provideradapter_chat",
       "community": 4,
-      "norm_label": ".chat()",
-      "id": "src_lib_providers_types_provideradapter_chat"
+      "norm_label": ".chat()"
     },
     {
       "label": "rate-limiter.ts",
@@ -249,9 +249,9 @@
       "source_file": "src/lib/rate-limiter.ts",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "src_lib_rate_limiter",
       "community": 5,
-      "norm_label": "rate-limiter.ts",
-      "id": "src_lib_rate_limiter"
+      "norm_label": "rate-limiter.ts"
     },
     {
       "label": "windows",
@@ -259,9 +259,9 @@
       "source_file": "src/lib/rate-limiter.ts",
       "source_location": "L5",
       "_origin": "ast",
+      "id": "src_lib_rate_limiter_windows",
       "community": 5,
-      "norm_label": "windows",
-      "id": "src_lib_rate_limiter_windows"
+      "norm_label": "windows"
     },
     {
       "label": "isProviderRateLimited()",
@@ -269,9 +269,9 @@
       "source_file": "src/lib/rate-limiter.ts",
       "source_location": "L7",
       "_origin": "ast",
+      "id": "src_lib_rate_limiter_isproviderratelimited",
       "community": 5,
-      "norm_label": "isproviderratelimited()",
-      "id": "src_lib_rate_limiter_isproviderratelimited"
+      "norm_label": "isproviderratelimited()"
     },
     {
       "label": "recordProviderCall()",
@@ -279,9 +279,9 @@
       "source_file": "src/lib/rate-limiter.ts",
       "source_location": "L14",
       "_origin": "ast",
+      "id": "src_lib_rate_limiter_recordprovidercall",
       "community": 5,
-      "norm_label": "recordprovidercall()",
-      "id": "src_lib_rate_limiter_recordprovidercall"
+      "norm_label": "recordprovidercall()"
     },
     {
       "label": "router.ts",
@@ -289,9 +289,9 @@
       "source_file": "src/lib/router.ts",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "src_lib_router",
       "community": 5,
-      "norm_label": "router.ts",
-      "id": "src_lib_router"
+      "norm_label": "router.ts"
     },
     {
       "label": "route()",
@@ -299,9 +299,9 @@
       "source_file": "src/lib/router.ts",
       "source_location": "L9",
       "_origin": "ast",
+      "id": "src_lib_router_route",
       "community": 5,
-      "norm_label": "route()",
-      "id": "src_lib_router_route"
+      "norm_label": "route()"
     },
     {
       "label": "logRequest()",
@@ -309,9 +309,9 @@
       "source_file": "src/lib/router.ts",
       "source_location": "L87",
       "_origin": "ast",
+      "id": "src_lib_router_logrequest",
       "community": 5,
-      "norm_label": "logrequest()",
-      "id": "src_lib_router_logrequest"
+      "norm_label": "logrequest()"
     },
     {
       "label": "CLAUDE.md",
@@ -688,54 +688,22 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "src/lib/providers/groq.ts",
+      "source_file": "scripts/migrate.ts",
       "source_location": "L6",
       "weight": 1.0,
-      "source": "src_lib_providers_groq",
-      "target": "src_lib_providers_groq_groqprovider",
+      "source": "scripts_migrate",
+      "target": "scripts_migrate_dirname",
       "confidence_score": 1.0
     },
     {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/lib/providers/index.ts",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_lib_providers_index",
-      "target": "src_lib_providers_groq"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/lib/providers/index.ts",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_lib_providers_index",
-      "target": "src_lib_providers_groq_groqprovider"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/migrate.ts",
-      "source_location": "L6",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "scripts_migrate",
-      "target": "scripts_migrate_dirname"
-    },
-    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/migrate.ts",
       "source_location": "L9",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "scripts_migrate",
-      "target": "scripts_migrate_migrate"
+      "target": "scripts_migrate_migrate",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -743,9 +711,9 @@
       "source_file": "scripts/migrate.ts",
       "source_location": "L7",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "scripts_migrate",
-      "target": "scripts_migrate_migrationsdir"
+      "target": "scripts_migrate_migrationsdir",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -753,9 +721,9 @@
       "source_file": "src/lib/circuit-breaker.ts",
       "source_location": "L7",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_circuit_breaker",
-      "target": "src_lib_circuit_breaker_failurecounters"
+      "target": "src_lib_circuit_breaker_failurecounters",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -763,9 +731,9 @@
       "source_file": "src/lib/circuit-breaker.ts",
       "source_location": "L9",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_circuit_breaker",
-      "target": "src_lib_circuit_breaker_iscircuitopen"
+      "target": "src_lib_circuit_breaker_iscircuitopen",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -773,9 +741,9 @@
       "source_file": "src/lib/circuit-breaker.ts",
       "source_location": "L28",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_circuit_breaker",
-      "target": "src_lib_circuit_breaker_onproviderfailure"
+      "target": "src_lib_circuit_breaker_onproviderfailure",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -783,9 +751,9 @@
       "source_file": "src/lib/circuit-breaker.ts",
       "source_location": "L17",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_circuit_breaker",
-      "target": "src_lib_circuit_breaker_onprovidersuccess"
+      "target": "src_lib_circuit_breaker_onprovidersuccess",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -794,9 +762,9 @@
       "source_file": "src/lib/router.ts",
       "source_location": "L5",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_router",
-      "target": "src_lib_circuit_breaker"
+      "target": "src_lib_circuit_breaker",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -805,9 +773,9 @@
       "source_file": "src/lib/router.ts",
       "source_location": "L5",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_router",
-      "target": "src_lib_circuit_breaker_iscircuitopen"
+      "target": "src_lib_circuit_breaker_iscircuitopen",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -827,9 +795,9 @@
       "source_file": "src/lib/router.ts",
       "source_location": "L5",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_router",
-      "target": "src_lib_circuit_breaker_onprovidersuccess"
+      "target": "src_lib_circuit_breaker_onprovidersuccess",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -849,9 +817,9 @@
       "source_file": "src/lib/router.ts",
       "source_location": "L5",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_router",
-      "target": "src_lib_circuit_breaker_onproviderfailure"
+      "target": "src_lib_circuit_breaker_onproviderfailure",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -870,9 +838,9 @@
       "source_file": "src/lib/providers/gemini.ts",
       "source_location": "L8",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_providers_gemini",
-      "target": "src_lib_providers_gemini_geminiprovider"
+      "target": "src_lib_providers_gemini_geminiprovider",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -881,9 +849,9 @@
       "source_file": "src/lib/providers/gemini.ts",
       "source_location": "L3",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_providers_gemini",
-      "target": "src_lib_providers_types"
+      "target": "src_lib_providers_types",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -892,9 +860,9 @@
       "source_file": "src/lib/providers/gemini.ts",
       "source_location": "L3",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_providers_gemini",
-      "target": "src_lib_providers_types_chatmessage"
+      "target": "src_lib_providers_types_chatmessage",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -903,9 +871,9 @@
       "source_file": "src/lib/providers/gemini.ts",
       "source_location": "L3",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_providers_gemini",
-      "target": "src_lib_providers_types_chatoptions"
+      "target": "src_lib_providers_types_chatoptions",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -914,9 +882,9 @@
       "source_file": "src/lib/providers/gemini.ts",
       "source_location": "L3",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_providers_gemini",
-      "target": "src_lib_providers_types_chatresponse"
+      "target": "src_lib_providers_types_chatresponse",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -925,9 +893,9 @@
       "source_file": "src/lib/providers/gemini.ts",
       "source_location": "L3",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_providers_gemini",
-      "target": "src_lib_providers_types_provideradapter"
+      "target": "src_lib_providers_types_provideradapter",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -936,9 +904,9 @@
       "source_file": "src/lib/providers/index.ts",
       "source_location": "L2",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_providers_index",
-      "target": "src_lib_providers_gemini"
+      "target": "src_lib_providers_gemini",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -947,9 +915,96 @@
       "source_file": "src/lib/providers/index.ts",
       "source_location": "L2",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_providers_index",
-      "target": "src_lib_providers_gemini_geminiprovider"
+      "target": "src_lib_providers_gemini_geminiprovider",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/providers/groq.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "src_lib_providers_groq",
+      "target": "src_lib_providers_groq_groqprovider",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/providers/groq.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "src_lib_providers_groq",
+      "target": "src_lib_providers_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/providers/groq.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "src_lib_providers_groq",
+      "target": "src_lib_providers_types_chatmessage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/providers/groq.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "src_lib_providers_groq",
+      "target": "src_lib_providers_types_chatoptions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/providers/groq.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "src_lib_providers_groq",
+      "target": "src_lib_providers_types_chatresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/providers/groq.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "src_lib_providers_groq",
+      "target": "src_lib_providers_types_provideradapter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/providers/index.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_lib_providers_index",
+      "target": "src_lib_providers_groq",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/providers/index.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_lib_providers_index",
+      "target": "src_lib_providers_groq_groqprovider",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -957,9 +1012,9 @@
       "source_file": "src/lib/providers/index.ts",
       "source_location": "L7",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_providers_index",
-      "target": "src_lib_providers_index_providers"
+      "target": "src_lib_providers_index_providers",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -968,9 +1023,9 @@
       "source_file": "src/lib/providers/index.ts",
       "source_location": "L3",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_providers_index",
-      "target": "src_lib_providers_openrouter"
+      "target": "src_lib_providers_openrouter",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -979,9 +1034,9 @@
       "source_file": "src/lib/providers/index.ts",
       "source_location": "L3",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_providers_index",
-      "target": "src_lib_providers_openrouter_openrouterprovider"
+      "target": "src_lib_providers_openrouter_openrouterprovider",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -990,9 +1045,9 @@
       "source_file": "src/lib/providers/index.ts",
       "source_location": "L4",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_providers_index",
-      "target": "src_lib_providers_types"
+      "target": "src_lib_providers_types",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -1001,9 +1056,9 @@
       "source_file": "src/lib/providers/index.ts",
       "source_location": "L4",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_providers_index",
-      "target": "src_lib_providers_types_provideradapter"
+      "target": "src_lib_providers_types_provideradapter",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -1012,9 +1067,9 @@
       "source_file": "src/lib/router.ts",
       "source_location": "L3",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_router",
-      "target": "src_lib_providers_index"
+      "target": "src_lib_providers_index",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -1023,9 +1078,9 @@
       "source_file": "src/lib/router.ts",
       "source_location": "L3",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_router",
-      "target": "src_lib_providers_index_providers"
+      "target": "src_lib_providers_index_providers",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -1033,9 +1088,9 @@
       "source_file": "src/lib/providers/openrouter.ts",
       "source_location": "L7",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_providers_openrouter",
-      "target": "src_lib_providers_openrouter_openrouterprovider"
+      "target": "src_lib_providers_openrouter_openrouterprovider",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -1044,9 +1099,9 @@
       "source_file": "src/lib/providers/openrouter.ts",
       "source_location": "L2",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_providers_openrouter",
-      "target": "src_lib_providers_types"
+      "target": "src_lib_providers_types",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -1055,9 +1110,9 @@
       "source_file": "src/lib/providers/openrouter.ts",
       "source_location": "L2",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_providers_openrouter",
-      "target": "src_lib_providers_types_chatmessage"
+      "target": "src_lib_providers_types_chatmessage",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -1066,9 +1121,9 @@
       "source_file": "src/lib/providers/openrouter.ts",
       "source_location": "L2",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_providers_openrouter",
-      "target": "src_lib_providers_types_chatoptions"
+      "target": "src_lib_providers_types_chatoptions",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -1077,9 +1132,9 @@
       "source_file": "src/lib/providers/openrouter.ts",
       "source_location": "L2",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_providers_openrouter",
-      "target": "src_lib_providers_types_chatresponse"
+      "target": "src_lib_providers_types_chatresponse",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -1088,9 +1143,9 @@
       "source_file": "src/lib/providers/openrouter.ts",
       "source_location": "L2",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_providers_openrouter",
-      "target": "src_lib_providers_types_provideradapter"
+      "target": "src_lib_providers_types_provideradapter",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -1098,9 +1153,9 @@
       "source_file": "src/lib/providers/types.ts",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_providers_types",
-      "target": "src_lib_providers_types_chatmessage"
+      "target": "src_lib_providers_types_chatmessage",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -1108,9 +1163,9 @@
       "source_file": "src/lib/providers/types.ts",
       "source_location": "L6",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_providers_types",
-      "target": "src_lib_providers_types_chatoptions"
+      "target": "src_lib_providers_types_chatoptions",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -1118,9 +1173,9 @@
       "source_file": "src/lib/providers/types.ts",
       "source_location": "L12",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_providers_types",
-      "target": "src_lib_providers_types_chatresponse"
+      "target": "src_lib_providers_types_chatresponse",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -1128,9 +1183,9 @@
       "source_file": "src/lib/providers/types.ts",
       "source_location": "L21",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_providers_types",
-      "target": "src_lib_providers_types_provideradapter"
+      "target": "src_lib_providers_types_provideradapter",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -1139,9 +1194,9 @@
       "source_file": "src/lib/router.ts",
       "source_location": "L7",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_router",
-      "target": "src_lib_providers_types"
+      "target": "src_lib_providers_types",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -1150,9 +1205,9 @@
       "source_file": "src/lib/router.ts",
       "source_location": "L7",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_router",
-      "target": "src_lib_providers_types_chatmessage"
+      "target": "src_lib_providers_types_chatmessage",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -1161,9 +1216,9 @@
       "source_file": "src/lib/router.ts",
       "source_location": "L7",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_router",
-      "target": "src_lib_providers_types_chatoptions"
+      "target": "src_lib_providers_types_chatoptions",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -1172,9 +1227,9 @@
       "source_file": "src/lib/router.ts",
       "source_location": "L7",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_router",
-      "target": "src_lib_providers_types_chatresponse"
+      "target": "src_lib_providers_types_chatresponse",
+      "confidence_score": 1.0
     },
     {
       "relation": "method",
@@ -1182,9 +1237,9 @@
       "source_file": "src/lib/providers/types.ts",
       "source_location": "L29",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_providers_types_provideradapter",
-      "target": "src_lib_providers_types_provideradapter_chat"
+      "target": "src_lib_providers_types_provideradapter_chat",
+      "confidence_score": 1.0
     },
     {
       "relation": "method",
@@ -1192,9 +1247,9 @@
       "source_file": "src/lib/providers/types.ts",
       "source_location": "L28",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_providers_types_provideradapter",
-      "target": "src_lib_providers_types_provideradapter_isconfigured"
+      "target": "src_lib_providers_types_provideradapter_isconfigured",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -1202,9 +1257,9 @@
       "source_file": "src/lib/rate-limiter.ts",
       "source_location": "L7",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_rate_limiter",
-      "target": "src_lib_rate_limiter_isproviderratelimited"
+      "target": "src_lib_rate_limiter_isproviderratelimited",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -1212,9 +1267,9 @@
       "source_file": "src/lib/rate-limiter.ts",
       "source_location": "L14",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_rate_limiter",
-      "target": "src_lib_rate_limiter_recordprovidercall"
+      "target": "src_lib_rate_limiter_recordprovidercall",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -1222,9 +1277,9 @@
       "source_file": "src/lib/rate-limiter.ts",
       "source_location": "L5",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_rate_limiter",
-      "target": "src_lib_rate_limiter_windows"
+      "target": "src_lib_rate_limiter_windows",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -1233,9 +1288,9 @@
       "source_file": "src/lib/router.ts",
       "source_location": "L6",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_router",
-      "target": "src_lib_rate_limiter"
+      "target": "src_lib_rate_limiter",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -1244,9 +1299,9 @@
       "source_file": "src/lib/router.ts",
       "source_location": "L6",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_router",
-      "target": "src_lib_rate_limiter_isproviderratelimited"
+      "target": "src_lib_rate_limiter_isproviderratelimited",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -1266,9 +1321,9 @@
       "source_file": "src/lib/router.ts",
       "source_location": "L6",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_router",
-      "target": "src_lib_rate_limiter_recordprovidercall"
+      "target": "src_lib_rate_limiter_recordprovidercall",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -1287,9 +1342,9 @@
       "source_file": "src/lib/router.ts",
       "source_location": "L87",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_router",
-      "target": "src_lib_router_logrequest"
+      "target": "src_lib_router_logrequest",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -1297,9 +1352,9 @@
       "source_file": "src/lib/router.ts",
       "source_location": "L9",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_router",
-      "target": "src_lib_router_route"
+      "target": "src_lib_router_route",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -1308,9 +1363,9 @@
       "source_file": "src/lib/router.ts",
       "source_location": "L43",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_lib_router_route",
-      "target": "src_lib_router_logrequest"
+      "target": "src_lib_router_logrequest",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -1664,5 +1719,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "d23f8ff4a697091a78b9a09ffa5613d716cea535"
+  "built_at_commit": "f6ef16e10295d52608ab179cdb9f9a9fb75a6482"
 }

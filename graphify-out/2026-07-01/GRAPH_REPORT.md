@@ -1,16 +1,16 @@
 # Graph Report - AI Gateway  (2026-07-01)
 
 ## Corpus Check
-- 30 files · ~6,924 words
+- 30 files · ~6,920 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 68 nodes · 94 edges · 7 communities (6 shown, 1 thin omitted)
+- 68 nodes · 99 edges · 7 communities (6 shown, 1 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d23f8ff4`
+- Built from commit: `f6ef16e1`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -26,11 +26,11 @@
 ## God Nodes (most connected - your core abstractions)
 1. `AI Gateway` - 8 edges
 2. `scripts` - 8 edges
-3. `route()` - 7 edges
-4. `ProviderAdapter` - 6 edges
-5. `ChatMessage` - 4 edges
-6. `ChatOptions` - 4 edges
-7. `ChatResponse` - 4 edges
+3. `ProviderAdapter` - 7 edges
+4. `route()` - 7 edges
+5. `ChatMessage` - 5 edges
+6. `ChatOptions` - 5 edges
+7. `ChatResponse` - 5 edges
 8. `isCircuitOpen()` - 3 edges
 9. `onProviderSuccess()` - 3 edges
 10. `onProviderFailure()` - 3 edges
@@ -69,7 +69,7 @@ Cohesion: 0.20
 Nodes (9): dependencies, next, postgres, react, react-dom, zod, name, private (+1 more)
 
 ### Community 4 - "package.json"
-Cohesion: 0.27
+Cohesion: 0.31
 Nodes (8): geminiProvider, groqProvider, providers, openrouterProvider, ChatMessage, ChatOptions, ChatResponse, ProviderAdapter
 
 ### Community 5 - "router.ts"
