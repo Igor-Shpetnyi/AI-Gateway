@@ -40,3 +40,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# graphify — commit graphify-out/ for shared graph, exclude local cost data
+graphify-out/cost.json
