@@ -1,27 +1,27 @@
 import { GatewayError } from '../errors'
 import type { ProviderAdapter, ChatMessage, ChatOptions, ChatResponse } from './types'
 
-const DEFAULT_MODEL = 'llama-3.1-8b-instant'
+const DEFAULT_MODEL = 'meta-llama/llama-3.1-8b-instruct:free'
+const BASE_URL = 'https://openrouter.ai/api/v1'
 
-export const groqProvider: ProviderAdapter = {
-  id: 'groq',
-  name: 'Groq',
-  priority: 1,
-  limits: { requestsPerMinute: 30 },
+export const openrouterProvider: ProviderAdapter = {
+  id: 'openrouter',
+  name: 'OpenRouter',
+  priority: 3,
+  limits: { requestsPerMinute: 20 },
 
-  isConfigured: () => !!process.env.GROQ_API_KEY,
+  isConfigured: () => !!process.env.OPENROUTER_API_KEY,
 
   async chat(messages: ChatMessage[], options: ChatOptions): Promise<ChatResponse> {
-    const apiKey = process.env.GROQ_API_KEY
-    if (!apiKey) throw new Error('GROQ_API_KEY is not configured')
-
+    const apiKey = process.env.OPENROUTER_API_KEY!
     const model = options.model === 'auto' ? DEFAULT_MODEL : options.model
 
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const res = await fetch(`${BASE_URL}/chat/completions`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://github.com/Igor-Shpetnyi/AI-Gateway',
       },
       body: JSON.stringify({
         model,
@@ -32,16 +32,16 @@ export const groqProvider: ProviderAdapter = {
     })
 
     if (!res.ok) {
-      const body = await res.json().catch(() => ({})) as { error?: { message?: string } }
-      const msg = body.error?.message ?? res.statusText
+      const err = await res.json().catch(() => ({})) as { error?: { message?: string; code?: number } }
+      const msg = err.error?.message ?? res.statusText
 
-      if (res.status === 400 && msg.toLowerCase().includes('model')) {
-        throw new GatewayError('MODEL_UNAVAILABLE', `Model not available on Groq: ${model}`, 409)
+      if (res.status === 404) {
+        throw new GatewayError('MODEL_UNAVAILABLE', `Model not available on OpenRouter: ${model}`, 409)
       }
       if (res.status === 429) {
-        throw new Error(`Groq rate limited: ${msg}`)
+        throw new Error(`OpenRouter rate limited: ${msg}`)
       }
-      throw new Error(`Groq error ${res.status}: ${msg}`)
+      throw new Error(`OpenRouter error ${res.status}: ${msg}`)
     }
 
     const data = await res.json() as {
@@ -57,7 +57,7 @@ export const groqProvider: ProviderAdapter = {
       content: data.choices[0].message.content,
       promptTokens: data.usage.prompt_tokens,
       completionTokens: data.usage.completion_tokens,
-      provider: 'groq',
+      provider: 'openrouter',
     }
   },
 }

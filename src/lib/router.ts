@@ -2,6 +2,8 @@ import crypto from 'crypto'
 import { sql } from './db'
 import { providers } from './providers'
 import { GatewayError } from './errors'
+import { isCircuitOpen, onProviderSuccess, onProviderFailure } from './circuit-breaker'
+import { isProviderRateLimited, recordProviderCall } from './rate-limiter'
 import type { ChatMessage, ChatOptions, ChatResponse } from './providers/types'
 
 export async function route(
@@ -11,12 +13,33 @@ export async function route(
 ): Promise<ChatResponse> {
   const sorted = [...providers].sort((a, b) => a.priority - b.priority)
   let lastError: Error | null = null
+  let allSkipped = true
 
   for (const provider of sorted) {
+    // Skip providers without API keys configured
+    if (!provider.isConfigured()) continue
+
+    // Skip if circuit breaker is open
+    if (await isCircuitOpen(provider.id)) {
+      console.info(`[Router] Skipping ${provider.id} — circuit open`)
+      continue
+    }
+
+    // Skip if we're at the provider's rate limit
+    if (isProviderRateLimited(provider.id, provider.limits.requestsPerMinute)) {
+      console.info(`[Router] Skipping ${provider.id} — rate limited`)
+      lastError = new Error(`${provider.name} rate limit reached`)
+      continue
+    }
+
+    allSkipped = false
     const start = Date.now()
+
     try {
+      recordProviderCall(provider.id)
       const response = await provider.chat(messages, options)
 
+      await onProviderSuccess(provider.id)
       await logRequest({
         projectId,
         providerId: provider.id,
@@ -42,11 +65,16 @@ export async function route(
         errorMessage: error.message,
       })
 
-      // MODEL_UNAVAILABLE is not retried — other providers likely don't have it either
+      // MODEL_UNAVAILABLE is propagated immediately — no point trying other providers
       if (err instanceof GatewayError && err.code === 'MODEL_UNAVAILABLE') throw err
 
+      await onProviderFailure(provider.id)
       lastError = error
     }
+  }
+
+  if (allSkipped) {
+    throw new GatewayError('ALL_PROVIDERS_DOWN', 'No providers are configured or available', 503)
   }
 
   throw new GatewayError(

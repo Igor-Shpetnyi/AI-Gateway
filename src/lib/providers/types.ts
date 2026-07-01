@@ -22,5 +22,9 @@ export interface ProviderAdapter {
   id: string
   name: string
   priority: number
+  limits: {
+    requestsPerMinute: number
+  }
+  isConfigured(): boolean
   chat(messages: ChatMessage[], options: ChatOptions): Promise<ChatResponse>
 }

@@ -1,0 +1,137 @@
+{
+  ".claude/settings.json": {
+    "mtime": 1782924359.9315352,
+    "ast_hash": "598cb075410bcd95220ac90bbb60344a",
+    "semantic_hash": ""
+  },
+  "eslint.config.mjs": {
+    "mtime": 1782923201.8569324,
+    "ast_hash": "dfa1f5f6a7037bf39dc510f30b180002",
+    "semantic_hash": ""
+  },
+  "migrations/001_initial.sql": {
+    "mtime": 1782923928.6712394,
+    "ast_hash": "71e28d9cbca43d04c9622406b7f46524",
+    "semantic_hash": ""
+  },
+  "next.config.ts": {
+    "mtime": 1782923201.8722215,
+    "ast_hash": "9b77af189a21a7a64e4bd7a426f64176",
+    "semantic_hash": ""
+  },
+  "package.json": {
+    "mtime": 1782924403.8394053,
+    "ast_hash": "e31df0491a2c77ae1d7febc19c516815",
+    "semantic_hash": ""
+  },
+  "pnpm.json": {
+    "mtime": 1782923373.6142676,
+    "ast_hash": "26f578e2c5ff12201ab86bdc6c76874f",
+    "semantic_hash": ""
+  },
+  "postcss.config.mjs": {
+    "mtime": 1782923201.863331,
+    "ast_hash": "239f3ebf717465dc636818a1a619398d",
+    "semantic_hash": ""
+  },
+  "scripts/create-project.ts": {
+    "mtime": 1782924008.8637233,
+    "ast_hash": "a5f63542521a4dabc4c80c6cb3aff660",
+    "semantic_hash": ""
+  },
+  "scripts/migrate.ts": {
+    "mtime": 1782924002.4947848,
+    "ast_hash": "a331b2ff689c5a407e364c154dd8c725",
+    "semantic_hash": ""
+  },
+  "src/app/layout.tsx": {
+    "mtime": 1782923201.8791964,
+    "ast_hash": "94c34ef68b3949a75807a0211ec2273c",
+    "semantic_hash": ""
+  },
+  "src/app/page.tsx": {
+    "mtime": 1782923233.0078182,
+    "ast_hash": "1e489b26bb597dc97f8d44954dd042da",
+    "semantic_hash": ""
+  },
+  "src/app/v1/chat/completions/route.ts": {
+    "mtime": 1782923995.6645052,
+    "ast_hash": "a127ec5997e14bbcd2d938704d5e4924",
+    "semantic_hash": ""
+  },
+  "src/lib/auth.ts": {
+    "mtime": 1782923948.4807463,
+    "ast_hash": "e53353ae537961e089d79742c83e3e7c",
+    "semantic_hash": ""
+  },
+  "src/lib/db.ts": {
+    "mtime": 1782923932.5516903,
+    "ast_hash": "420818bd7c020714a06b34c6dbab21fd",
+    "semantic_hash": ""
+  },
+  "src/lib/errors.ts": {
+    "mtime": 1782923940.454223,
+    "ast_hash": "66c1abe2e264e03f0346c4fa3429b44d",
+    "semantic_hash": ""
+  },
+  "src/lib/providers/groq.ts": {
+    "mtime": 1782923967.786481,
+    "ast_hash": "db45ab8e5801247502ac9386b4c52c04",
+    "semantic_hash": ""
+  },
+  "src/lib/providers/index.ts": {
+    "mtime": 1782923971.9972434,
+    "ast_hash": "4a244b35a226d1508b268111d0c21d7c",
+    "semantic_hash": ""
+  },
+  "src/lib/providers/types.ts": {
+    "mtime": 1782923958.9526036,
+    "ast_hash": "d1c5e6e3c94f25badc032c5840239cde",
+    "semantic_hash": ""
+  },
+  "src/lib/quota.ts": {
+    "mtime": 1782923954.5775743,
+    "ast_hash": "5e78e460d2ed50fbf988c8d822a6f1fe",
+    "semantic_hash": ""
+  },
+  "src/lib/router.ts": {
+    "mtime": 1782923980.3404212,
+    "ast_hash": "56a1debe35f6fc826a6b8ed0a89124de",
+    "semantic_hash": ""
+  },
+  "tsconfig.json": {
+    "mtime": 1782923233.0064373,
+    "ast_hash": "ee17fd1c97c735e9f3564e3f5251f125",
+    "semantic_hash": ""
+  },
+  "AI-GATEWAY-PROJECT.md": {
+    "mtime": 1782922692.955204,
+    "ast_hash": "5f395920e778045a5835224a33ac3619",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1782924359.9295526,
+    "ast_hash": "d113b6aaac623c7e01e42d5f3c4b79e2",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1782923201.852732,
+    "ast_hash": "f15aaa42d5d299d091b1171097ea56ad",
+    "semantic_hash": ""
+  },
+  "docker-compose.yml": {
+    "mtime": 1782923484.0084467,
+    "ast_hash": "9bd1c8fb1e36919b220f42497a9c6a8f",
+    "semantic_hash": ""
+  },
+  "graphify-guide.md": {
+    "mtime": 1782922740.1972277,
+    "ast_hash": "730574b202873b0b2b8e0c7378a1b509",
+    "semantic_hash": ""
+  },
+  "pnpm-workspace.yaml": {
+    "mtime": 1782923906.527843,
+    "ast_hash": "11cd21e2f357e142eddd285d5ee8032d",
+    "semantic_hash": ""
+  }
+}
