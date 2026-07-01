@@ -35,7 +35,7 @@ export const groqProvider: ProviderAdapter = {
       const body = await res.json().catch(() => ({})) as { error?: { message?: string } }
       const msg = body.error?.message ?? res.statusText
 
-      if (res.status === 400 && msg.toLowerCase().includes('model')) {
+      if (res.status === 404 || (res.status === 400 && msg.toLowerCase().includes('model'))) {
         throw new GatewayError('MODEL_UNAVAILABLE', `Model not available on Groq: ${model}`, 409)
       }
       if (res.status === 429) {
