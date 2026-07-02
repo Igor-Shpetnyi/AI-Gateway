@@ -11,8 +11,8 @@ export const geminiProvider: ProviderAdapter = {
 
   isConfigured: () => !!process.env.GEMINI_API_KEY,
 
-  async chat(messages: ChatMessage[], options: ChatOptions): Promise<ChatResponse> {
-    const apiKey = process.env.GEMINI_API_KEY!
+  async chat(messages: ChatMessage[], options: ChatOptions, apiKey = process.env.GEMINI_API_KEY): Promise<ChatResponse> {
+    if (!apiKey) throw new Error('GEMINI_API_KEY is not configured')
     const model = options.model === 'auto' ? DEFAULT_MODEL : options.model
 
     // Gemini uses systemInstruction for system messages, separate from contents

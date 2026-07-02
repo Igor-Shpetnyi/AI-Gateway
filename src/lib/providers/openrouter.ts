@@ -10,8 +10,8 @@ export const openrouterProvider: ProviderAdapter = {
 
   isConfigured: () => !!process.env.OPENROUTER_API_KEY,
 
-  async chat(messages: ChatMessage[], options: ChatOptions): Promise<ChatResponse> {
-    const apiKey = process.env.OPENROUTER_API_KEY!
+  async chat(messages: ChatMessage[], options: ChatOptions, apiKey = process.env.OPENROUTER_API_KEY): Promise<ChatResponse> {
+    if (!apiKey) throw new Error('OPENROUTER_API_KEY is not configured')
     const model = options.model === 'auto' ? DEFAULT_MODEL : options.model
 
     const res = await fetch(`${BASE_URL}/chat/completions`, {

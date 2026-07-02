@@ -9,8 +9,7 @@ export const groqProvider: ProviderAdapter = {
 
   isConfigured: () => !!process.env.GROQ_API_KEY,
 
-  async chat(messages: ChatMessage[], options: ChatOptions): Promise<ChatResponse> {
-    const apiKey = process.env.GROQ_API_KEY
+  async chat(messages: ChatMessage[], options: ChatOptions, apiKey = process.env.GROQ_API_KEY): Promise<ChatResponse> {
     if (!apiKey) throw new Error('GROQ_API_KEY is not configured')
 
     const model = options.model === 'auto' ? DEFAULT_MODEL : options.model
