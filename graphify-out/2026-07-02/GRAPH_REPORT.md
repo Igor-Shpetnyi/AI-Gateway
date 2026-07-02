@@ -1,16 +1,16 @@
 # Graph Report - ai-gateway  (2026-07-02)
 
 ## Corpus Check
-- 70 files · ~15,835 words
+- 71 files · ~16,206 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 300 nodes · 512 edges · 18 communities (14 shown, 4 thin omitted)
+- 301 nodes · 513 edges · 18 communities (14 shown, 4 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `1612da80`
+- Built from commit: `a1f20038`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -103,16 +103,16 @@ Cohesion: 0.50
 Nodes (3): Deploy on Vercel, Getting Started, Learn More
 
 ### Community 17 - "trpc.ts"
-Cohesion: 0.10
-Nodes (29): LogsPage(), REQUEST_STATUSES, STATUS_STYLES, DashboardPage(), ProjectsPage(), ProviderRow, ProviderRowView(), ProvidersPage() (+21 more)
+Cohesion: 0.09
+Nodes (30): LogsPage(), REQUEST_STATUSES, STATUS_STYLES, DashboardPage(), ProjectsPage(), ProviderRow, ProviderRowView(), ProvidersPage() (+22 more)
 
 ### Community 18 - "_app.ts"
 Cohesion: 0.15
 Nodes (15): decryptSecret(), encryptSecret(), getKey(), maskSecret(), globalForDb, AppRouter, logsRouter, projectsRouter (+7 more)
 
 ### Community 19 - "admin-auth.ts"
-Cohesion: 0.12
-Nodes (22): login(), logout(), AdminLayout(), LanguageProvider(), LANGS, LanguageSwitcher(), getServerLang(), isValidLang() (+14 more)
+Cohesion: 0.13
+Nodes (21): login(), logout(), AdminLayout(), LANGS, LanguageSwitcher(), getServerLang(), isValidLang(), Lang (+13 more)
 
 ## Knowledge Gaps
 - **131 isolated node(s):** `eslintConfig`, `nextConfig`, `name`, `version`, `private` (+126 more)

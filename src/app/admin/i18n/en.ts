@@ -94,6 +94,7 @@ export const en = {
     keyLabelPlaceholder: 'Label (optional)',
     keyValuePlaceholder: 'API key',
     keyRpmPlaceholder: 'Req/min override',
+    keyRpdPlaceholder: 'Req/day override',
     addKey: 'Add key',
     removeKey: 'Remove',
     deleteProvider: 'Delete',

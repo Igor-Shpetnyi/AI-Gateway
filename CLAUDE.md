@@ -9,7 +9,7 @@ Multi-tenant OpenAI-compatible gateway to free LLM providers. One Next.js app se
 - Provider secrets: either env vars (`GROQ_API_KEY` etc., built-in providers only) or AES-256-GCM-encrypted rows in `provider_api_keys` (`src/lib/crypto.ts`) — never hardcoded, never plaintext in DB
 - New provider with a bespoke API shape (non-OpenAI-compatible, e.g. Gemini): implement `ProviderAdapter` in `src/lib/providers/<name>.ts`, add to `src/lib/providers/index.ts` registry, add a `providers` DB row. New OpenAI-compatible provider (most free-tier services): just add it through the admin panel (Providers → Add provider) — no code needed, it's served by the generic adapter in `providers/openai-compatible.ts`
 - A provider can have multiple API keys (`provider_api_keys`, admin-managed); router.ts round-robins across them and retries the next key on failure before moving to the next provider
-- `requests_per_minute` is enforced per (provider, key) — each key gets its own rate-limit bucket. `provider_api_keys.requests_per_minute` optionally overrides `providers.requests_per_minute` for that one key (NULL = inherit); this is what actually lets N keys multiply a provider's throughput instead of sharing one shared budget. `requests_per_day` exists on both tables but isn't enforced anywhere yet (pre-existing gap)
+- Both `requests_per_minute` and `requests_per_day` are enforced per (provider, key) — each key gets its own in-memory per-minute bucket and its own DB-counted daily count (`request_logs.provider_key_id`, NULL = the env-var fallback key). `provider_api_keys.requests_per_minute`/`requests_per_day` optionally override the provider's defaults for that one key (NULL = inherit); this is what lets N keys multiply a provider's throughput instead of sharing one shared budget
 - Only custom (admin-added) providers can be deleted (`providers.remove`, guarded server-side against built-in ids) — built-in providers can only be deactivated. Deleting a provider cascades its keys and nulls `request_logs.provider_id` (`ON DELETE SET NULL`) rather than deleting historical logs
 - `/admin/*` routes require a valid `admin_session` cookie (checked in `middleware.ts` and again in every `adminProcedure`) — never add an `/admin/*` page or tRPC procedure that skips this
 - Admin panel UI/design work must follow `Resources/inventory_sync_design_guideline.md` (dark B2B theme, `#F26E21` accent — tokens live in `globals.css` under `.admin-theme`)
@@ -35,7 +35,7 @@ src/lib/
   quota.ts        daily quota check via COUNT(request_logs)
   cache.ts        response cache — key(model+messages+temperature) → response_cache, temperature-bucketed TTL
   crypto.ts       AES-256-GCM encrypt/decrypt/mask for provider_api_keys (key: ENCRYPTION_KEY env)
-  router.ts       provider selection loop, per-key rotation + rate limiting + request logging (exports logRequest)
+  router.ts       provider selection loop, per-key rotation + per-minute/per-day rate limiting + request logging (exports logRequest)
   providers/
     types.ts      ProviderAdapter interface (id, name, isConfigured, chat(msgs, opts, apiKey?)) + ChatMessage/ChatOptions/ChatResponse
     groq.ts       Groq adapter (model:"auto" → llama-3.1-8b-instant)
@@ -50,7 +50,7 @@ src/server/
   routers/_app.ts        root router: projects, providers, logs, stats
   routers/projects.ts     project CRUD, generates gw_live_ keys
   routers/providers.ts    live provider config (priority/active/limits), create custom provider, circuit breaker reset
-  routers/providerKeys.ts add/remove/toggle/updateLimit API keys per provider (masked in responses, never returns plaintext)
+  routers/providerKeys.ts add/remove/toggle/updateLimits API keys per provider (masked in responses, never returns plaintext)
   routers/logs.ts         paginated request_logs with filters
   routers/stats.ts        dashboard aggregates
 
@@ -67,7 +67,7 @@ scripts/create-project.ts             — project creation CLI
 
 ## DB tables
 `projects` · `providers` · `provider_api_keys` · `request_logs` · `daily_stats` · `response_cache` · `rate_limit_state`
-Full DDL → `migrations/001_initial.sql` (+ `002_add_providers.sql`, `003_provider_api_keys.sql`, `004_provider_delete.sql`, `005_provider_key_limits.sql`)
+Full DDL → `migrations/001_initial.sql` (+ `002_add_providers.sql`, `003_provider_api_keys.sql`, `004_provider_delete.sql`, `005_provider_key_limits.sql`, `006_request_logs_key.sql`)
 
 ## Development phases
 - **1 ✅ Core Gateway** — auth, Groq adapter, logging

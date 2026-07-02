@@ -1,16 +1,16 @@
 # Graph Report - ai-gateway  (2026-07-02)
 
 ## Corpus Check
-- 71 files · ~16,206 words
+- 72 files · ~16,595 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 301 nodes · 513 edges · 18 communities (14 shown, 4 thin omitted)
+- 302 nodes · 515 edges · 18 communities (14 shown, 4 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `a1f20038`
+- Built from commit: `cf703dcc`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -35,8 +35,8 @@
 
 ## God Nodes (most connected - your core abstractions)
 1. `compilerOptions` - 16 edges
-2. `AI Gateway — мультитенантний адаптер до безкоштовних AI-моделей` - 14 edges
-3. `route()` - 13 edges
+2. `route()` - 14 edges
+3. `AI Gateway — мультитенантний адаптер до безкоштовних AI-моделей` - 14 edges
 4. `Graphify: концепція та інструкція використання для економії токенів` - 13 edges
 5. `useI18n()` - 12 edges
 6. `POST()` - 11 edges
@@ -80,7 +80,7 @@ Nodes (23): 10. Приклад контракту `ProviderAdapter`, 11. Тип�
 
 ### Community 4 - "package.json"
 Cohesion: 0.13
-Nodes (25): failureCounters, isCircuitOpen(), onProviderFailure(), onProviderSuccess(), GatewayError, GatewayErrorCode, geminiProvider, groqProvider (+17 more)
+Nodes (26): failureCounters, isCircuitOpen(), onProviderFailure(), onProviderSuccess(), GatewayError, GatewayErrorCode, geminiProvider, groqProvider (+18 more)
 
 ### Community 5 - "router.ts"
 Cohesion: 0.28
@@ -125,7 +125,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `Lang` connect `admin-auth.ts` to `trpc.ts`?**
   _High betweenness centrality (0.013) - this node is a cross-community bridge._
 - **Why does `route()` connect `package.json` to `router.ts`?**
-  _High betweenness centrality (0.008) - this node is a cross-community bridge._
+  _High betweenness centrality (0.009) - this node is a cross-community bridge._
 - **What connects `eslintConfig`, `nextConfig`, `name` to the rest of the system?**
   _131 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `devDependencies` be split into smaller, more focused modules?**
@@ -135,4 +135,4 @@ _Questions this graph is uniquely positioned to answer:_
 - **Should `dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.08333333333333333 - nodes in this community are weakly interconnected._
 - **Should `package.json` be split into smaller, more focused modules?**
-  _Cohesion score 0.12944523470839261 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.12550607287449392 - nodes in this community are weakly interconnected._

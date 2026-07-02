@@ -314,6 +314,7 @@ function ProviderRowView({
               providerId={provider.id}
               isCustom={provider.isCustom}
               defaultRpm={provider.requests_per_minute}
+              defaultRpd={provider.requests_per_day}
             />
           </td>
         </tr>

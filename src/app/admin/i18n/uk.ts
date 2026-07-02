@@ -96,6 +96,7 @@ export const uk: typeof en = {
     keyLabelPlaceholder: 'Мітка (необов’язково)',
     keyValuePlaceholder: 'API-ключ',
     keyRpmPlaceholder: 'Перевизначити зап/хв',
+    keyRpdPlaceholder: 'Перевизначити зап/день',
     addKey: 'Додати ключ',
     removeKey: 'Видалити',
     deleteProvider: 'Видалити',

@@ -15,10 +15,11 @@ export const providerKeysRouter = router({
           key_encrypted: string
           is_active: boolean
           requests_per_minute: number | null
+          requests_per_day: number | null
           created_at: Date
         }[]
       >`
-        SELECT id, label, key_encrypted, is_active, requests_per_minute, created_at
+        SELECT id, label, key_encrypted, is_active, requests_per_minute, requests_per_day, created_at
         FROM provider_api_keys
         WHERE provider_id = ${input.providerId}
         ORDER BY created_at
@@ -29,6 +30,7 @@ export const providerKeysRouter = router({
         label: row.label,
         isActive: row.is_active,
         requestsPerMinute: row.requests_per_minute,
+        requestsPerDay: row.requests_per_day,
         createdAt: row.created_at,
         maskedKey: maskSecret(decryptSecret(row.key_encrypted)),
       }))
@@ -41,13 +43,17 @@ export const providerKeysRouter = router({
         label: z.string().max(100).optional(),
         key: z.string().min(1),
         requestsPerMinute: z.number().int().positive().optional(),
+        requestsPerDay: z.number().int().positive().optional(),
       })
     )
     .mutation(async ({ input }) => {
       const id = crypto.randomUUID()
       await sql`
-        INSERT INTO provider_api_keys (id, provider_id, label, key_encrypted, is_active, requests_per_minute)
-        VALUES (${id}, ${input.providerId}, ${input.label ?? null}, ${encryptSecret(input.key)}, true, ${input.requestsPerMinute ?? null})
+        INSERT INTO provider_api_keys (id, provider_id, label, key_encrypted, is_active, requests_per_minute, requests_per_day)
+        VALUES (
+          ${id}, ${input.providerId}, ${input.label ?? null}, ${encryptSecret(input.key)}, true,
+          ${input.requestsPerMinute ?? null}, ${input.requestsPerDay ?? null}
+        )
       `
       return { id }
     }),
@@ -58,11 +64,21 @@ export const providerKeysRouter = router({
       await sql`UPDATE provider_api_keys SET is_active = ${input.isActive} WHERE id = ${input.id}`
     }),
 
-  // requestsPerMinute: null clears the override, falling back to the provider's default
-  updateLimit: adminProcedure
-    .input(z.object({ id: z.string(), requestsPerMinute: z.number().int().positive().nullable() }))
+  // null clears an override, falling back to the provider's default
+  updateLimits: adminProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        requestsPerMinute: z.number().int().positive().nullable(),
+        requestsPerDay: z.number().int().positive().nullable(),
+      })
+    )
     .mutation(async ({ input }) => {
-      await sql`UPDATE provider_api_keys SET requests_per_minute = ${input.requestsPerMinute} WHERE id = ${input.id}`
+      await sql`
+        UPDATE provider_api_keys
+        SET requests_per_minute = ${input.requestsPerMinute}, requests_per_day = ${input.requestsPerDay}
+        WHERE id = ${input.id}
+      `
     }),
 
   remove: adminProcedure

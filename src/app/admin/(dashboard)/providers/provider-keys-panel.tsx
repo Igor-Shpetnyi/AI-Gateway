@@ -10,11 +10,13 @@ export function ProviderKeysPanel({
   providerId,
   isCustom,
   defaultRpm,
+  defaultRpd,
 }: {
   t: Dict
   providerId: string
   isCustom: boolean
   defaultRpm: number
+  defaultRpd: number
 }) {
   const utils = trpc.useUtils()
   const { data: keys, isLoading } = trpc.providerKeys.listForProvider.useQuery({ providerId })
@@ -22,6 +24,7 @@ export function ProviderKeysPanel({
   const [label, setLabel] = useState('')
   const [key, setKey] = useState('')
   const [rpm, setRpm] = useState('')
+  const [rpd, setRpd] = useState('')
 
   function invalidate() {
     utils.providerKeys.listForProvider.invalidate({ providerId })
@@ -33,11 +36,12 @@ export function ProviderKeysPanel({
       setLabel('')
       setKey('')
       setRpm('')
+      setRpd('')
       invalidate()
     },
   })
   const setActive = trpc.providerKeys.setActive.useMutation({ onSuccess: invalidate })
-  const updateLimit = trpc.providerKeys.updateLimit.useMutation({ onSuccess: invalidate })
+  const updateLimits = trpc.providerKeys.updateLimits.useMutation({ onSuccess: invalidate })
   const remove = trpc.providerKeys.remove.useMutation({ onSuccess: invalidate })
 
   return (
@@ -52,8 +56,11 @@ export function ProviderKeysPanel({
               t={t}
               keyRow={k}
               defaultRpm={defaultRpm}
+              defaultRpd={defaultRpd}
               onToggleActive={(isActive) => setActive.mutate({ id: k.id, isActive })}
-              onSaveLimit={(requestsPerMinute) => updateLimit.mutate({ id: k.id, requestsPerMinute })}
+              onSaveLimits={(requestsPerMinute, requestsPerDay) =>
+                updateLimits.mutate({ id: k.id, requestsPerMinute, requestsPerDay })
+              }
               onRemove={() => remove.mutate({ id: k.id })}
             />
           ))}
@@ -65,7 +72,13 @@ export function ProviderKeysPanel({
       <form
         onSubmit={(e) => {
           e.preventDefault()
-          addKey.mutate({ providerId, label: label || undefined, key, requestsPerMinute: rpm ? Number(rpm) : undefined })
+          addKey.mutate({
+            providerId,
+            label: label || undefined,
+            key,
+            requestsPerMinute: rpm ? Number(rpm) : undefined,
+            requestsPerDay: rpd ? Number(rpd) : undefined,
+          })
         }}
         className="flex flex-wrap items-center gap-2"
       >
@@ -91,6 +104,14 @@ export function ProviderKeysPanel({
           placeholder={`${t.providers.keyRpmPlaceholder} (${defaultRpm})`}
           className="w-40 rounded-lg border border-surface-border bg-background px-2 py-1 text-xs outline-none focus:border-accent"
         />
+        <input
+          type="number"
+          min={1}
+          value={rpd}
+          onChange={(e) => setRpd(e.target.value)}
+          placeholder={`${t.providers.keyRpdPlaceholder} (${defaultRpd})`}
+          className="w-40 rounded-lg border border-surface-border bg-background px-2 py-1 text-xs outline-none focus:border-accent"
+        />
         <button
           type="submit"
           disabled={addKey.isPending}
@@ -107,8 +128,9 @@ function KeyRow({
   t,
   keyRow,
   defaultRpm,
+  defaultRpd,
   onToggleActive,
-  onSaveLimit,
+  onSaveLimits,
   onRemove,
 }: {
   t: Dict
@@ -118,13 +140,16 @@ function KeyRow({
     maskedKey: string
     isActive: boolean
     requestsPerMinute: number | null
+    requestsPerDay: number | null
   }
   defaultRpm: number
+  defaultRpd: number
   onToggleActive: (isActive: boolean) => void
-  onSaveLimit: (requestsPerMinute: number | null) => void
+  onSaveLimits: (requestsPerMinute: number | null, requestsPerDay: number | null) => void
   onRemove: () => void
 }) {
   const [rpm, setRpm] = useState(keyRow.requestsPerMinute?.toString() ?? '')
+  const [rpd, setRpd] = useState(keyRow.requestsPerDay?.toString() ?? '')
 
   return (
     <li className="flex flex-wrap items-center justify-between gap-3 text-sm">
@@ -142,9 +167,17 @@ function KeyRow({
           placeholder={`${t.providers.keyRpmPlaceholder} (${defaultRpm})`}
           className="w-40 rounded-lg border border-surface-border bg-background px-2 py-1 text-xs outline-none focus:border-accent"
         />
+        <input
+          type="number"
+          min={1}
+          value={rpd}
+          onChange={(e) => setRpd(e.target.value)}
+          placeholder={`${t.providers.keyRpdPlaceholder} (${defaultRpd})`}
+          className="w-40 rounded-lg border border-surface-border bg-background px-2 py-1 text-xs outline-none focus:border-accent"
+        />
         <button
           type="button"
-          onClick={() => onSaveLimit(rpm ? Number(rpm) : null)}
+          onClick={() => onSaveLimits(rpm ? Number(rpm) : null, rpd ? Number(rpd) : null)}
           className="rounded-lg border border-surface-border px-2 py-1 text-xs text-muted hover:text-foreground"
         >
           {t.common.save}

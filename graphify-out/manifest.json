@@ -95,8 +95,8 @@
     "semantic_hash": ""
   },
   "src/lib/router.ts": {
-    "mtime": 1782996707.2267432,
-    "ast_hash": "01dc25b26cfd28ee3b2cc3b41c85ff31",
+    "mtime": 1782997837.620583,
+    "ast_hash": "5fcaffb1cfac287b499ab1ff7278ccca",
     "semantic_hash": ""
   },
   "tsconfig.json": {
@@ -110,8 +110,8 @@
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1782997383.9856298,
-    "ast_hash": "68e53eee77b4578804aa5c82bf96773c",
+    "mtime": 1782998240.0117652,
+    "ast_hash": "c10a660baaba76b69891bb5ed64547c2",
     "semantic_hash": ""
   },
   "README.md": {
@@ -195,8 +195,8 @@
     "semantic_hash": ""
   },
   "src/app/admin/(dashboard)/providers/page.tsx": {
-    "mtime": 1782996836.5996132,
-    "ast_hash": "b10fe6ba9e32b98891a863d13f79d6b9",
+    "mtime": 1782997961.5641284,
+    "ast_hash": "1ebfe4a7e50bb71ecc0e358c1e3079cf",
     "semantic_hash": ""
   },
   "src/app/admin/actions.ts": {
@@ -270,8 +270,8 @@
     "semantic_hash": ""
   },
   "src/app/admin/(dashboard)/providers/provider-keys-panel.tsx": {
-    "mtime": 1782996818.599104,
-    "ast_hash": "de466c6124128c401547fc4f7f254aaa",
+    "mtime": 1782997942.311554,
+    "ast_hash": "a109b41e041a7be306b0d9e97cd39a25",
     "semantic_hash": ""
   },
   "src/app/admin/i18n/LanguageProvider.tsx": {
@@ -290,8 +290,8 @@
     "semantic_hash": ""
   },
   "src/app/admin/i18n/en.ts": {
-    "mtime": 1782996851.3528275,
-    "ast_hash": "5c8d76aea426cdba28668e995d9061af",
+    "mtime": 1782997975.0613723,
+    "ast_hash": "ddd1fa587252f6ff4441cfbb13cfd55c",
     "semantic_hash": ""
   },
   "src/app/admin/i18n/helpers.ts": {
@@ -310,8 +310,8 @@
     "semantic_hash": ""
   },
   "src/app/admin/i18n/uk.ts": {
-    "mtime": 1782996867.8944464,
-    "ast_hash": "9943cc1ab0f4138aeccd6202b24abc91",
+    "mtime": 1782997989.8110325,
+    "ast_hash": "f539ec82e3fb18dced7a30d2928a3bab",
     "semantic_hash": ""
   },
   "src/app/admin/icons.tsx": {
@@ -345,8 +345,8 @@
     "semantic_hash": ""
   },
   "src/server/routers/providerKeys.ts": {
-    "mtime": 1782996764.8319616,
-    "ast_hash": "e47bed72db7e78ee97172da0644a94b4",
+    "mtime": 1782997912.8713655,
+    "ast_hash": "d21bb480b18aaa7c0c37eca28212e05f",
     "semantic_hash": ""
   },
   "Resources/inventory_sync_design_guideline.md": {
@@ -362,6 +362,11 @@
   "migrations/005_provider_key_limits.sql": {
     "mtime": 1782996634.6734865,
     "ast_hash": "c3d21818d5f0ad8ce0bdb5440373aaab",
+    "semantic_hash": ""
+  },
+  "migrations/006_request_logs_key.sql": {
+    "mtime": 1782997769.183487,
+    "ast_hash": "6129fa2591e0a3cadd3c09c6034c43b4",
     "semantic_hash": ""
   }
 }
