@@ -2,8 +2,12 @@
 
 import { useState } from 'react'
 import { trpc } from '@/lib/trpc'
+import { Toggle } from '../../toggle'
+import { useI18n } from '../../i18n/LanguageProvider'
+import type { Dict } from '../../i18n/dictionaries'
 
 export default function ProjectsPage() {
+  const { t } = useI18n()
   const utils = trpc.useUtils()
   const { data: projects, isLoading } = trpc.projects.list.useQuery()
 
@@ -30,23 +34,26 @@ export default function ProjectsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-semibold">Projects</h1>
+      <div>
+        <h1 className="text-2xl font-bold">{t.projects.title}</h1>
+        <p className="mt-1 text-sm text-muted">{t.projects.subtitle}</p>
+      </div>
 
       {createdKey && (
-        <div className="rounded border border-amber-500/40 bg-amber-500/10 p-4 text-sm space-y-2">
-          <p className="font-medium">Save this API key — it will not be shown again.</p>
+        <div className="space-y-2 rounded-xl border border-warning/30 bg-warning/10 p-4 text-sm">
+          <p className="font-medium text-foreground">{t.projects.keyBanner}</p>
           <div className="flex items-center gap-2">
-            <code className="rounded bg-black/10 dark:bg-white/10 px-2 py-1 break-all">{createdKey}</code>
+            <code className="break-all rounded-lg bg-background px-2 py-1 text-foreground">{createdKey}</code>
             <button
               type="button"
               onClick={() => navigator.clipboard.writeText(createdKey)}
-              className="shrink-0 rounded border border-black/20 dark:border-white/20 px-2 py-1 text-xs"
+              className="shrink-0 rounded-lg border border-surface-border px-2 py-1 text-xs text-foreground"
             >
-              Copy
+              {t.common.copy}
             </button>
           </div>
-          <button type="button" onClick={() => setCreatedKey(null)} className="text-xs underline">
-            Dismiss
+          <button type="button" onClick={() => setCreatedKey(null)} className="text-xs text-muted underline">
+            {t.common.dismiss}
           </button>
         </div>
       )}
@@ -59,81 +66,84 @@ export default function ProjectsPage() {
             dailyQuota: dailyQuota ? Number(dailyQuota) : null,
           })
         }}
-        className="flex flex-wrap items-end gap-3 rounded border border-black/10 dark:border-white/10 p-4"
+        className="flex flex-wrap items-end gap-3 rounded-2xl border border-surface-border bg-surface p-5"
       >
-        <label className="flex flex-col gap-1 text-sm">
-          Name
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className="text-xs text-muted">{t.projects.nameLabel}</span>
           <input
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="rounded border border-black/20 dark:border-white/20 bg-transparent px-2 py-1"
+            className="rounded-lg border border-surface-border bg-background px-3 py-1.5 outline-none focus:border-accent"
           />
         </label>
-        <label className="flex flex-col gap-1 text-sm">
-          Daily quota (optional)
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className="text-xs text-muted">{t.projects.dailyQuotaLabel}</span>
           <input
             type="number"
             min={1}
             value={dailyQuota}
             onChange={(e) => setDailyQuota(e.target.value)}
-            className="rounded border border-black/20 dark:border-white/20 bg-transparent px-2 py-1"
+            className="w-36 rounded-lg border border-surface-border bg-background px-3 py-1.5 outline-none focus:border-accent"
           />
         </label>
         <button
           type="submit"
           disabled={create.isPending}
-          className="rounded bg-foreground text-background px-3 py-1.5 text-sm font-medium disabled:opacity-50"
+          className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
         >
-          {create.isPending ? 'Creating…' : 'Create project'}
+          {create.isPending ? t.projects.creating : t.projects.create}
         </button>
       </form>
 
-      {isLoading ? (
-        <p className="text-sm text-black/60 dark:text-white/60">Loading…</p>
-      ) : (
-        <table className="w-full text-sm border-collapse">
-          <thead>
-            <tr className="border-b border-black/10 dark:border-white/10 text-left">
-              <th className="py-2 pr-4">Name</th>
-              <th className="py-2 pr-4">Status</th>
-              <th className="py-2 pr-4">Daily quota</th>
-              <th className="py-2 pr-4">Created</th>
-              <th className="py-2 pr-4" />
-            </tr>
-          </thead>
-          <tbody>
-            {projects?.map((project) => (
-              <ProjectRow
-                key={project.id}
-                project={project}
-                onToggleActive={() =>
-                  setActive.mutate({ id: project.id, isActive: !project.is_active })
-                }
-                onSaveQuota={(quota) =>
-                  updateQuota.mutate({ id: project.id, dailyQuota: quota, monthlyQuota: project.monthly_quota })
-                }
-              />
-            ))}
-            {projects?.length === 0 && (
-              <tr>
-                <td colSpan={5} className="py-4 text-black/60 dark:text-white/60">
-                  No projects yet.
-                </td>
+      <div className="overflow-hidden rounded-2xl border border-surface-border bg-surface">
+        {isLoading ? (
+          <p className="p-5 text-sm text-muted">{t.common.loading}</p>
+        ) : (
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-xs text-muted">
+                <th className="px-5 py-3 font-medium">{t.projects.colName}</th>
+                <th className="px-5 py-3 font-medium">{t.projects.colStatus}</th>
+                <th className="px-5 py-3 font-medium">{t.projects.colDailyQuota}</th>
+                <th className="px-5 py-3 font-medium">{t.projects.colCreated}</th>
+                <th className="px-5 py-3" />
               </tr>
-            )}
-          </tbody>
-        </table>
-      )}
+            </thead>
+            <tbody className="divide-y divide-surface-border">
+              {projects?.map((project) => (
+                <ProjectRow
+                  key={project.id}
+                  t={t}
+                  project={project}
+                  onToggleActive={(isActive) => setActive.mutate({ id: project.id, isActive })}
+                  onSaveQuota={(quota) =>
+                    updateQuota.mutate({ id: project.id, dailyQuota: quota, monthlyQuota: project.monthly_quota })
+                  }
+                />
+              ))}
+              {projects?.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-5 py-6 text-muted">
+                    {t.projects.empty}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        )}
+      </div>
     </div>
   )
 }
 
 function ProjectRow({
+  t,
   project,
   onToggleActive,
   onSaveQuota,
 }: {
+  t: Dict
   project: {
     id: string
     name: string
@@ -141,50 +151,47 @@ function ProjectRow({
     daily_quota: number | null
     created_at: Date
   }
-  onToggleActive: () => void
+  onToggleActive: (isActive: boolean) => void
   onSaveQuota: (quota: number | null) => void
 }) {
   const [quota, setQuota] = useState(project.daily_quota?.toString() ?? '')
 
   return (
-    <tr className="border-b border-black/5 dark:border-white/5">
-      <td className="py-2 pr-4">{project.name}</td>
-      <td className="py-2 pr-4">
-        <button
-          type="button"
-          onClick={onToggleActive}
-          className={`rounded px-2 py-0.5 text-xs ${
-            project.is_active
-              ? 'bg-green-500/15 text-green-600 dark:text-green-400'
-              : 'bg-red-500/15 text-red-600 dark:text-red-400'
-          }`}
-        >
-          {project.is_active ? 'active' : 'disabled'}
-        </button>
+    <tr>
+      <td className="px-5 py-3 font-medium">{project.name}</td>
+      <td className="px-5 py-3">
+        <div className="flex items-center gap-2">
+          <Toggle checked={project.is_active} onChange={onToggleActive} />
+          <span
+            className={`rounded-full px-2 py-0.5 text-xs ${
+              project.is_active ? 'bg-success/15 text-success' : 'bg-danger/15 text-danger'
+            }`}
+          >
+            {project.is_active ? t.common.active : t.common.disabled}
+          </span>
+        </div>
       </td>
-      <td className="py-2 pr-4">
+      <td className="px-5 py-3">
         <div className="flex items-center gap-2">
           <input
             type="number"
             min={1}
-            placeholder="unlimited"
+            placeholder={t.projects.unlimitedPlaceholder}
             value={quota}
             onChange={(e) => setQuota(e.target.value)}
-            className="w-24 rounded border border-black/20 dark:border-white/20 bg-transparent px-2 py-0.5"
+            className="w-24 rounded-lg border border-surface-border bg-background px-2 py-1 outline-none focus:border-accent"
           />
           <button
             type="button"
             onClick={() => onSaveQuota(quota ? Number(quota) : null)}
-            className="text-xs underline"
+            className="rounded-lg border border-surface-border px-2 py-1 text-xs text-muted hover:text-foreground"
           >
-            Save
+            {t.common.save}
           </button>
         </div>
       </td>
-      <td className="py-2 pr-4 text-black/60 dark:text-white/60">
-        {new Date(project.created_at).toLocaleDateString()}
-      </td>
-      <td className="py-2 pr-4" />
+      <td className="px-5 py-3 text-muted">{new Date(project.created_at).toLocaleDateString()}</td>
+      <td className="px-5 py-3" />
     </tr>
   )
 }

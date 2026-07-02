@@ -2,6 +2,10 @@
 
 import { useState } from 'react'
 import { trpc } from '@/lib/trpc'
+import { Toggle } from '../../toggle'
+import { useI18n } from '../../i18n/LanguageProvider'
+import { statusLabel } from '../../i18n/helpers'
+import type { Dict } from '../../i18n/dictionaries'
 
 type ProviderRow = {
   id: string
@@ -16,12 +20,13 @@ type ProviderRow = {
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  healthy: 'bg-green-500/15 text-green-600 dark:text-green-400',
-  degraded: 'bg-amber-500/15 text-amber-600 dark:text-amber-400',
-  down: 'bg-red-500/15 text-red-600 dark:text-red-400',
+  healthy: 'bg-success/15 text-success',
+  degraded: 'bg-warning/15 text-warning',
+  down: 'bg-danger/15 text-danger',
 }
 
 export default function ProvidersPage() {
+  const { t } = useI18n()
   const utils = trpc.useUtils()
   const { data: providers, isLoading } = trpc.providers.list.useQuery()
 
@@ -34,44 +39,52 @@ export default function ProvidersPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-semibold">Providers</h1>
+      <div>
+        <h1 className="text-2xl font-bold">{t.providers.title}</h1>
+        <p className="mt-1 text-sm text-muted">{t.providers.subtitle}</p>
+      </div>
 
-      {isLoading ? (
-        <p className="text-sm text-black/60 dark:text-white/60">Loading…</p>
-      ) : (
-        <table className="w-full text-sm border-collapse">
-          <thead>
-            <tr className="border-b border-black/10 dark:border-white/10 text-left">
-              <th className="py-2 pr-4">Provider</th>
-              <th className="py-2 pr-4">Active</th>
-              <th className="py-2 pr-4">Priority</th>
-              <th className="py-2 pr-4">Req/min</th>
-              <th className="py-2 pr-4">Req/day</th>
-              <th className="py-2 pr-4">Status</th>
-              <th className="py-2 pr-4" />
-            </tr>
-          </thead>
-          <tbody>
-            {providers?.map((provider) => (
-              <ProviderRowView
-                key={provider.id}
-                provider={provider}
-                onSave={(fields) => update.mutate({ id: provider.id, ...fields })}
-                onResetCircuitBreaker={() => resetCircuitBreaker.mutate({ id: provider.id })}
-              />
-            ))}
-          </tbody>
-        </table>
-      )}
+      <div className="overflow-hidden rounded-2xl border border-surface-border bg-surface">
+        {isLoading ? (
+          <p className="p-5 text-sm text-muted">{t.common.loading}</p>
+        ) : (
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-xs text-muted">
+                <th className="px-5 py-3 font-medium">{t.providers.colProvider}</th>
+                <th className="px-5 py-3 font-medium">{t.providers.colActive}</th>
+                <th className="px-5 py-3 font-medium">{t.providers.colPriority}</th>
+                <th className="px-5 py-3 font-medium">{t.providers.colReqMin}</th>
+                <th className="px-5 py-3 font-medium">{t.providers.colReqDay}</th>
+                <th className="px-5 py-3 font-medium">{t.providers.colStatus}</th>
+                <th className="px-5 py-3" />
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-surface-border">
+              {providers?.map((provider) => (
+                <ProviderRowView
+                  key={provider.id}
+                  t={t}
+                  provider={provider}
+                  onSave={(fields) => update.mutate({ id: provider.id, ...fields })}
+                  onResetCircuitBreaker={() => resetCircuitBreaker.mutate({ id: provider.id })}
+                />
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
     </div>
   )
 }
 
 function ProviderRowView({
+  t,
   provider,
   onSave,
   onResetCircuitBreaker,
 }: {
+  t: Dict
   provider: ProviderRow
   onSave: (fields: {
     isActive: boolean
@@ -89,56 +102,56 @@ function ProviderRowView({
   const circuitOpen = provider.circuit_breaker_until && new Date(provider.circuit_breaker_until) > new Date()
 
   return (
-    <tr className="border-b border-black/5 dark:border-white/5 align-top">
-      <td className="py-2 pr-4">
-        <div className="font-medium">{provider.name}</div>
-        <div className="text-xs text-black/50 dark:text-white/50">
-          {provider.isConfigured ? 'API key configured' : 'API key missing (env not set)'}
+    <tr className="align-top">
+      <td className="min-w-[190px] px-5 py-3">
+        <div className="whitespace-nowrap font-medium">{provider.name}</div>
+        <div className="mt-0.5 whitespace-nowrap text-xs text-muted">
+          {provider.isConfigured ? t.providers.keyConfigured : t.providers.keyMissing}
         </div>
       </td>
-      <td className="py-2 pr-4">
-        <input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} />
+      <td className="px-5 py-3">
+        <Toggle checked={isActive} onChange={setIsActive} />
       </td>
-      <td className="py-2 pr-4">
+      <td className="px-5 py-3">
         <input
           type="number"
           value={priority}
           onChange={(e) => setPriority(e.target.value)}
-          className="w-16 rounded border border-black/20 dark:border-white/20 bg-transparent px-2 py-0.5"
+          className="w-16 rounded-lg border border-surface-border bg-background px-2 py-1 outline-none focus:border-accent"
         />
       </td>
-      <td className="py-2 pr-4">
+      <td className="px-5 py-3">
         <input
           type="number"
           min={1}
           value={rpm}
           onChange={(e) => setRpm(e.target.value)}
-          className="w-20 rounded border border-black/20 dark:border-white/20 bg-transparent px-2 py-0.5"
+          className="w-20 rounded-lg border border-surface-border bg-background px-2 py-1 outline-none focus:border-accent"
         />
       </td>
-      <td className="py-2 pr-4">
+      <td className="px-5 py-3">
         <input
           type="number"
           min={1}
           value={rpd}
           onChange={(e) => setRpd(e.target.value)}
-          className="w-24 rounded border border-black/20 dark:border-white/20 bg-transparent px-2 py-0.5"
+          className="w-24 rounded-lg border border-surface-border bg-background px-2 py-1 outline-none focus:border-accent"
         />
       </td>
-      <td className="py-2 pr-4">
-        <span className={`rounded px-2 py-0.5 text-xs ${STATUS_STYLES[provider.status] ?? ''}`}>
-          {provider.status}
+      <td className="px-5 py-3">
+        <span className={`rounded-full px-2 py-0.5 text-xs ${STATUS_STYLES[provider.status] ?? ''}`}>
+          {statusLabel(t, provider.status)}
         </span>
         {circuitOpen && (
-          <div className="mt-1 text-xs text-black/50 dark:text-white/50">
-            open until {new Date(provider.circuit_breaker_until!).toLocaleTimeString()}
-            <button type="button" onClick={onResetCircuitBreaker} className="ml-2 underline">
-              reset
+          <div className="mt-1 text-xs text-muted">
+            {t.providers.openUntil} {new Date(provider.circuit_breaker_until!).toLocaleTimeString()}
+            <button type="button" onClick={onResetCircuitBreaker} className="ml-2 text-accent underline">
+              {t.providers.reset}
             </button>
           </div>
         )}
       </td>
-      <td className="py-2 pr-4">
+      <td className="px-5 py-3">
         <button
           type="button"
           onClick={() =>
@@ -149,9 +162,9 @@ function ProviderRowView({
               requestsPerDay: Number(rpd),
             })
           }
-          className="text-xs underline"
+          className="rounded-lg border border-surface-border px-2 py-1 text-xs text-muted hover:text-foreground"
         >
-          Save
+          {t.common.save}
         </button>
       </td>
     </tr>

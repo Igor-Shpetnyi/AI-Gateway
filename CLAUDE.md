@@ -9,6 +9,7 @@ Multi-tenant OpenAI-compatible gateway to free LLM providers. One Next.js app se
 - Provider secrets: env vars only (`GROQ_API_KEY` etc.) — never hardcoded, never plaintext in DB
 - New provider: implement `ProviderAdapter` in `src/lib/providers/<name>.ts`, add to `src/lib/providers/index.ts` registry — then add a row to the `providers` DB table for it to actually be routed to
 - `/admin/*` routes require a valid `admin_session` cookie (checked in `middleware.ts` and again in every `adminProcedure`) — never add an `/admin/*` page or tRPC procedure that skips this
+- Admin panel UI/design work must follow `Resources/inventory_sync_design_guideline.md` (dark B2B theme, `#F26E21` accent — tokens live in `globals.css` under `.admin-theme`)
 - Architecture decisions in `AI-GATEWAY-PROJECT.md §6` are final — don't re-propose alternatives
 
 ## Stack
