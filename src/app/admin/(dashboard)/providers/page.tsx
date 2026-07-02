@@ -309,7 +309,12 @@ function ProviderRowView({
       {expanded && (
         <tr>
           <td colSpan={7} className="px-5 pb-4">
-            <ProviderKeysPanel t={t} providerId={provider.id} isCustom={provider.isCustom} />
+            <ProviderKeysPanel
+              t={t}
+              providerId={provider.id}
+              isCustom={provider.isCustom}
+              defaultRpm={provider.requests_per_minute}
+            />
           </td>
         </tr>
       )}

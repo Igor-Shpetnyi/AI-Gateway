@@ -18,6 +18,7 @@ interface ProviderConfig {
 interface ResolvedKey {
   keyId: string
   apiKey: string | undefined // undefined = let the adapter fall back to its own env var
+  requestsPerMinute: number | null // null = inherit the provider's default
 }
 
 async function getActiveProviderConfigs(): Promise<ProviderConfig[]> {
@@ -30,18 +31,22 @@ async function getActiveProviderConfigs(): Promise<ProviderConfig[]> {
 }
 
 async function getKeysForProvider(providerId: string, adapter: ProviderAdapter): Promise<ResolvedKey[]> {
-  const rows = await sql<{ id: string; key_encrypted: string }[]>`
-    SELECT id, key_encrypted FROM provider_api_keys
+  const rows = await sql<{ id: string; key_encrypted: string; requests_per_minute: number | null }[]>`
+    SELECT id, key_encrypted, requests_per_minute FROM provider_api_keys
     WHERE provider_id = ${providerId} AND is_active = true
     ORDER BY created_at
   `
 
   if (rows.length > 0) {
-    return rows.map((row) => ({ keyId: row.id, apiKey: decryptSecret(row.key_encrypted) }))
+    return rows.map((row) => ({
+      keyId: row.id,
+      apiKey: decryptSecret(row.key_encrypted),
+      requestsPerMinute: row.requests_per_minute,
+    }))
   }
 
   // No DB-managed keys — fall back to the code adapter's own env var, if any
-  return adapter.isConfigured() ? [{ keyId: 'env', apiKey: undefined }] : []
+  return adapter.isConfigured() ? [{ keyId: 'env', apiKey: undefined, requestsPerMinute: null }] : []
 }
 
 // Distributes load across a provider's keys over time rather than always
@@ -79,11 +84,12 @@ export async function route(
     let attemptedAnyKey = false
 
     for (const idx of rotationOrder(config.id, keys.length)) {
-      const { keyId, apiKey } = keys[idx]
+      const { keyId, apiKey, requestsPerMinute } = keys[idx]
       const bucket = `${config.id}:${keyId}`
+      const effectiveRpm = requestsPerMinute ?? config.requests_per_minute
 
       // Skip if this specific key is at its rate limit
-      if (isProviderRateLimited(bucket, config.requests_per_minute)) {
+      if (isProviderRateLimited(bucket, effectiveRpm)) {
         console.info(`[Router] Skipping ${config.id} key ${keyId} — rate limited`)
         lastError = new Error(`${adapter.name} rate limit reached`)
         continue

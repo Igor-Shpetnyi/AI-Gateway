@@ -93,6 +93,7 @@ export const en = {
     keysNoneCustom: 'No keys added yet',
     keyLabelPlaceholder: 'Label (optional)',
     keyValuePlaceholder: 'API key',
+    keyRpmPlaceholder: 'Req/min override',
     addKey: 'Add key',
     removeKey: 'Remove',
     deleteProvider: 'Delete',
