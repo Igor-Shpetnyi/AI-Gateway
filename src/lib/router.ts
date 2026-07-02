@@ -84,7 +84,7 @@ export async function route(
   )
 }
 
-async function logRequest(params: {
+export async function logRequest(params: {
   projectId: string
   providerId: string
   model: string
@@ -100,6 +100,6 @@ async function logRequest(params: {
     VALUES
       (${crypto.randomUUID()}, ${params.projectId}, ${params.providerId}, ${params.model},
        ${params.promptTokens}, ${params.completionTokens}, ${params.latencyMs},
-       ${params.status}, ${params.errorMessage ?? null}, false)
+       ${params.status}, ${params.errorMessage ?? null}, ${params.status === 'cached'})
   `
 }

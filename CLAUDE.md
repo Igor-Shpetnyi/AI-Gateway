@@ -3,7 +3,7 @@
 Multi-tenant OpenAI-compatible gateway to free LLM providers. One Next.js app serves both the gateway API (`/v1/*`) and admin panel (`/admin/*`, Phase 4).
 
 ## Core invariants — never violate without explicit request
-- Every `/v1/*` route must follow: `authenticate` → `checkQuota` → `route` → _(logging is inside router)_
+- Every `/v1/*` route must follow: `authenticate` → `checkQuota` → check cache → `route` (on miss) → _(logging is inside router / cache path)_
 - Errors: always `throw new GatewayError(code, message, statusCode)` — never bare `new Error`
 - API keys: format `gw_live_<32 hex>`, stored as SHA-256 hash only, compared with `timingSafeEqual`
 - Provider secrets: env vars only (`GROQ_API_KEY` etc.) — never hardcoded, never plaintext in DB
@@ -28,7 +28,8 @@ src/lib/
   errors.ts       GatewayError with typed codes
   auth.ts         Bearer token → project row (timingSafeEqual)
   quota.ts        daily quota check via COUNT(request_logs)
-  router.ts       provider selection loop + request logging
+  cache.ts        response cache — key(model+messages+temperature) → response_cache, temperature-bucketed TTL
+  router.ts       provider selection loop + request logging (exports logRequest)
   providers/
     types.ts      ProviderAdapter interface + ChatMessage/ChatOptions/ChatResponse
     groq.ts       Groq adapter (model:"auto" → llama-3.1-8b-instant)
@@ -47,7 +48,7 @@ Full DDL → `migrations/001_initial.sql`
 ## Development phases
 - **1 ✅ Core Gateway** — auth, Groq adapter, logging
 - **2 ✅ Provider Pool** — Gemini + OpenRouter, circuit breaker, sliding-window rate limiter
-- **3** Cache — response cache with TTL strategy
+- **3 ✅ Cache** — response cache, TTL bucketed by temperature (deterministic/standard/creative)
 - **4** Admin Panel — tRPC + Next.js UI (dashboard, projects CRUD, logs)
 - **5** Deploy — Northflank + Cloudflare, AES-256-GCM provider key encryption
 - **6** Connect pet-projects

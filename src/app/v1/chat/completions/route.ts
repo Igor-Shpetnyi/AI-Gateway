@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { authenticate } from '@/lib/auth'
 import { checkQuota } from '@/lib/quota'
-import { route } from '@/lib/router'
+import { route, logRequest } from '@/lib/router'
+import { cacheKey, cacheTtlSeconds, getCachedResponse, setCachedResponse } from '@/lib/cache'
 import { GatewayError } from '@/lib/errors'
 
 const RequestSchema = z.object({
@@ -42,7 +43,25 @@ export async function POST(request: NextRequest) {
 
     await checkQuota(project.id, project.daily_quota)
 
-    const response = await route(project.id, messages, { model, temperature, max_tokens })
+    const key = cacheKey(model, messages, temperature)
+    const cached = await getCachedResponse(key)
+
+    let response
+    if (cached) {
+      await logRequest({
+        projectId: project.id,
+        providerId: cached.provider,
+        model: cached.model,
+        promptTokens: cached.promptTokens,
+        completionTokens: cached.completionTokens,
+        latencyMs: 0,
+        status: 'cached',
+      })
+      response = cached
+    } else {
+      response = await route(project.id, messages, { model, temperature, max_tokens })
+      await setCachedResponse(key, response, cacheTtlSeconds(temperature))
+    }
 
     return NextResponse.json({
       id: response.id,

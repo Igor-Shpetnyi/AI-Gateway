@@ -55,8 +55,8 @@
     "semantic_hash": ""
   },
   "src/app/v1/chat/completions/route.ts": {
-    "mtime": 1782981126.7698092,
-    "ast_hash": "346c582274383c7925bdfdcb29234143",
+    "mtime": 1782978334.643257,
+    "ast_hash": "94c600ad379d74bd398d4ed9133d5b02",
     "semantic_hash": ""
   },
   "src/lib/auth.ts": {
@@ -95,8 +95,8 @@
     "semantic_hash": ""
   },
   "src/lib/router.ts": {
-    "mtime": 1782981104.0979488,
-    "ast_hash": "8a26db4017587f89a01dad2c557d3002",
+    "mtime": 1782978334.643257,
+    "ast_hash": "2df46938fe1353bbee5d12dada51764a",
     "semantic_hash": ""
   },
   "tsconfig.json": {
@@ -110,8 +110,8 @@
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1782981142.4846566,
-    "ast_hash": "490170a02a855e3110259207148b3874",
+    "mtime": 1782978334.6056027,
+    "ast_hash": "5e995ce7b6a5571b4505db6bb74f4ec8",
     "semantic_hash": ""
   },
   "README.md": {
@@ -167,11 +167,6 @@
   ".claude/settings.local.json": {
     "mtime": 1782978464.4402835,
     "ast_hash": "4c78931f76709ed88dac03360eb142c3",
-    "semantic_hash": ""
-  },
-  "src/lib/cache.ts": {
-    "mtime": 1782981094.6321733,
-    "ast_hash": "54de39c22609b95de66057d6a3a83595",
     "semantic_hash": ""
   }
 }
