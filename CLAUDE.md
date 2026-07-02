@@ -7,11 +7,12 @@ Multi-tenant OpenAI-compatible gateway to free LLM providers. One Next.js app se
 - Errors: always `throw new GatewayError(code, message, statusCode)` — never bare `new Error`
 - API keys: format `gw_live_<32 hex>`, stored as SHA-256 hash only, compared with `timingSafeEqual`
 - Provider secrets: env vars only (`GROQ_API_KEY` etc.) — never hardcoded, never plaintext in DB
-- New provider: implement `ProviderAdapter` in `src/lib/providers/<name>.ts`, add to `src/lib/providers/index.ts`
+- New provider: implement `ProviderAdapter` in `src/lib/providers/<name>.ts`, add to `src/lib/providers/index.ts` registry — then add a row to the `providers` DB table for it to actually be routed to
+- `/admin/*` routes require a valid `admin_session` cookie (checked in `middleware.ts` and again in every `adminProcedure`) — never add an `/admin/*` page or tRPC procedure that skips this
 - Architecture decisions in `AI-GATEWAY-PROJECT.md §6` are final — don't re-propose alternatives
 
 ## Stack
-TypeScript · Next.js 16 (App Router) · postgres.js (raw SQL, no ORM) · Zod · pnpm
+TypeScript · Next.js 16 (App Router) · postgres.js (raw SQL, no ORM) · Zod · pnpm · tRPC v11 + React Query (admin API)
 
 ## Commands
 ```bash
@@ -31,9 +32,25 @@ src/lib/
   cache.ts        response cache — key(model+messages+temperature) → response_cache, temperature-bucketed TTL
   router.ts       provider selection loop + request logging (exports logRequest)
   providers/
-    types.ts      ProviderAdapter interface + ChatMessage/ChatOptions/ChatResponse
+    types.ts      ProviderAdapter interface (id, name, isConfigured, chat) + ChatMessage/ChatOptions/ChatResponse
     groq.ts       Groq adapter (model:"auto" → llama-3.1-8b-instant)
-    index.ts      active provider registry
+    index.ts      code adapter registry, keyed by id — routing order/active/limits come from DB `providers` table, not here
+
+src/lib/admin-auth.ts  Web-Crypto-only (Edge-safe) admin password check + signed session token
+src/middleware.ts       gates all /admin/* behind admin_session cookie
+
+src/server/
+  trpc.ts               tRPC init + adminProcedure (session check, defense in depth vs middleware)
+  routers/_app.ts        root router: projects, providers, logs, stats
+  routers/projects.ts     project CRUD, generates gw_live_ keys
+  routers/providers.ts    live provider config (priority/active/limits), circuit breaker reset
+  routers/logs.ts         paginated request_logs with filters
+  routers/stats.ts        dashboard aggregates
+
+src/app/admin/
+  login/page.tsx          password form (Server Action in actions.ts sets the session cookie)
+  (dashboard)/layout.tsx   nav + logout, wraps dashboard/projects/providers/logs (route group, no URL segment)
+  api/trpc/[trpc]/route.ts  tRPC fetch adapter
 
 src/app/v1/chat/completions/route.ts  — POST /v1/chat/completions (main endpoint)
 migrations/001_initial.sql            — full schema DDL + Groq seed
@@ -49,7 +66,7 @@ Full DDL → `migrations/001_initial.sql`
 - **1 ✅ Core Gateway** — auth, Groq adapter, logging
 - **2 ✅ Provider Pool** — Gemini + OpenRouter, circuit breaker, sliding-window rate limiter
 - **3 ✅ Cache** — response cache, TTL bucketed by temperature (deterministic/standard/creative)
-- **4** Admin Panel — tRPC + Next.js UI (dashboard, projects CRUD, logs)
+- **4 ✅ Admin Panel** — password-login + signed-cookie session, tRPC v11 API, dashboard/projects/providers/logs UI. Providers screen writes live to the `providers` table — router.ts reads priority/active/limits from DB on every request (not from code) as of this phase
 - **5** Deploy — Northflank + Cloudflare, AES-256-GCM provider key encryption
 - **6** Connect pet-projects
 

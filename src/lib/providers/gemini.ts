@@ -8,8 +8,6 @@ const BASE_URL = 'https://generativelanguage.googleapis.com/v1beta'
 export const geminiProvider: ProviderAdapter = {
   id: 'gemini',
   name: 'Google Gemini',
-  priority: 2,
-  limits: { requestsPerMinute: 15 },
 
   isConfigured: () => !!process.env.GEMINI_API_KEY,
 

@@ -6,16 +6,33 @@ import { isCircuitOpen, onProviderSuccess, onProviderFailure } from './circuit-b
 import { isProviderRateLimited, recordProviderCall } from './rate-limiter'
 import type { ChatMessage, ChatOptions, ChatResponse } from './providers/types'
 
+interface ProviderConfig {
+  id: string
+  requests_per_minute: number
+}
+
+async function getActiveProviderConfigs(): Promise<ProviderConfig[]> {
+  return sql<ProviderConfig[]>`
+    SELECT id, requests_per_minute
+    FROM providers
+    WHERE is_active = true
+    ORDER BY priority
+  `
+}
+
 export async function route(
   projectId: string,
   messages: ChatMessage[],
   options: ChatOptions
 ): Promise<ChatResponse> {
-  const sorted = [...providers].sort((a, b) => a.priority - b.priority)
+  const configs = await getActiveProviderConfigs()
   let lastError: Error | null = null
   let allSkipped = true
 
-  for (const provider of sorted) {
+  for (const config of configs) {
+    const provider = providers[config.id]
+    if (!provider) continue // DB row with no matching code adapter — skip defensively
+
     // Skip providers without API keys configured
     if (!provider.isConfigured()) continue
 
@@ -26,7 +43,7 @@ export async function route(
     }
 
     // Skip if we're at the provider's rate limit
-    if (isProviderRateLimited(provider.id, provider.limits.requestsPerMinute)) {
+    if (isProviderRateLimited(provider.id, config.requests_per_minute)) {
       console.info(`[Router] Skipping ${provider.id} — rate limited`)
       lastError = new Error(`${provider.name} rate limit reached`)
       continue

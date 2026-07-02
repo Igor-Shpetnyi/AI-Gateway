@@ -6,8 +6,6 @@ const DEFAULT_MODEL = 'llama-3.1-8b-instant'
 export const groqProvider: ProviderAdapter = {
   id: 'groq',
   name: 'Groq',
-  priority: 1,
-  limits: { requestsPerMinute: 30 },
 
   isConfigured: () => !!process.env.GROQ_API_KEY,
 

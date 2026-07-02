@@ -3,9 +3,11 @@ import { geminiProvider } from './gemini'
 import { openrouterProvider } from './openrouter'
 import type { ProviderAdapter } from './types'
 
-// Sorted by priority (lowest number = highest priority): Groq → Gemini → OpenRouter
-export const providers: ProviderAdapter[] = [
-  groqProvider,
-  geminiProvider,
-  openrouterProvider,
-]
+// Registry of code-implemented adapters, keyed by id. Routing order, active
+// status, and rate limits are NOT decided here — they live in the `providers`
+// DB table (editable from the admin panel) and are resolved by router.ts.
+export const providers: Record<string, ProviderAdapter> = {
+  groq: groqProvider,
+  gemini: geminiProvider,
+  openrouter: openrouterProvider,
+}
