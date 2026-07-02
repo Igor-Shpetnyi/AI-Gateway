@@ -95,6 +95,9 @@ export const en = {
     keyValuePlaceholder: 'API key',
     addKey: 'Add key',
     removeKey: 'Remove',
+    deleteProvider: 'Delete',
+    confirmDeleteProvider:
+      'Delete this provider? Its API keys will be removed too. Past logs are kept but lose the provider link.',
   },
   logs: {
     title: 'Logs',

@@ -1,5 +1,6 @@
 import crypto from 'crypto'
 import { z } from 'zod'
+import { TRPCError } from '@trpc/server'
 import { router, adminProcedure } from '../trpc'
 import { sql } from '@/lib/db'
 import { providers as adapterRegistry } from '@/lib/providers'
@@ -87,5 +88,17 @@ export const providersRouter = router({
       await sql`
         UPDATE providers SET status = 'healthy', circuit_breaker_until = NULL WHERE id = ${input.id}
       `
+    }),
+
+  // Built-in providers are referenced by id in the code adapter registry —
+  // deleting their DB row would silently break routing rather than remove
+  // anything. Only custom (admin-added) providers can be deleted.
+  remove: adminProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input }) => {
+      if (input.id in adapterRegistry) {
+        throw new TRPCError({ code: 'BAD_REQUEST', message: 'Built-in providers cannot be deleted, only deactivated' })
+      }
+      await sql`DELETE FROM providers WHERE id = ${input.id}`
     }),
 })

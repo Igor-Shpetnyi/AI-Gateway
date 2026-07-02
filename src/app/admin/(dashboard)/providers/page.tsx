@@ -57,6 +57,12 @@ export default function ProvidersPage() {
   const resetCircuitBreaker = trpc.providers.resetCircuitBreaker.useMutation({
     onSuccess: () => utils.providers.list.invalidate(),
   })
+  const remove = trpc.providers.remove.useMutation({
+    onSuccess: (_, variables) => {
+      if (expandedId === variables.id) setExpandedId(null)
+      utils.providers.list.invalidate()
+    },
+  })
 
   return (
     <div className="space-y-6">
@@ -162,6 +168,11 @@ export default function ProvidersPage() {
                   onToggleExpanded={() => setExpandedId(expandedId === provider.id ? null : provider.id)}
                   onSave={(fields) => update.mutate({ id: provider.id, ...fields })}
                   onResetCircuitBreaker={() => resetCircuitBreaker.mutate({ id: provider.id })}
+                  onDelete={() => {
+                    if (window.confirm(t.providers.confirmDeleteProvider)) {
+                      remove.mutate({ id: provider.id })
+                    }
+                  }}
                 />
               ))}
             </tbody>
@@ -179,6 +190,7 @@ function ProviderRowView({
   onToggleExpanded,
   onSave,
   onResetCircuitBreaker,
+  onDelete,
 }: {
   t: Dict
   provider: ProviderRow
@@ -191,6 +203,7 @@ function ProviderRowView({
     requestsPerDay: number
   }) => void
   onResetCircuitBreaker: () => void
+  onDelete: () => void
 }) {
   const [isActive, setIsActive] = useState(provider.is_active)
   const [priority, setPriority] = useState(String(provider.priority))
@@ -282,6 +295,15 @@ function ProviderRowView({
           >
             {expanded ? t.providers.hideKeys : `${t.providers.manageKeys} (${provider.activeKeyCount})`}
           </button>
+          {provider.isCustom && (
+            <button
+              type="button"
+              onClick={onDelete}
+              className="block w-full rounded-lg border border-danger/30 px-2 py-1 text-xs text-danger hover:bg-danger/10"
+            >
+              {t.providers.deleteProvider}
+            </button>
+          )}
         </td>
       </tr>
       {expanded && (

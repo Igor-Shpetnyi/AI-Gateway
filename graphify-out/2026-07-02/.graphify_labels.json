@@ -14,7 +14,6 @@
   "12": "eslint.config.mjs",
   "13": "next.config.ts",
   "14": "postcss.config.mjs",
-  "15": "create-project.ts",
   "16": "page.tsx",
   "17": "trpc.ts",
   "18": "_app.ts",

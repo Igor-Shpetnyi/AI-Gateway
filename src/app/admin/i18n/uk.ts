@@ -97,6 +97,9 @@ export const uk: typeof en = {
     keyValuePlaceholder: 'API-ключ',
     addKey: 'Додати ключ',
     removeKey: 'Видалити',
+    deleteProvider: 'Видалити',
+    confirmDeleteProvider:
+      'Видалити цього провайдера? Його API-ключі теж буде видалено. Минулі логи збережуться, але втратять зв’язок із провайдером.',
   },
   logs: {
     title: 'Логи',

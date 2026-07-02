@@ -105,13 +105,13 @@
     "semantic_hash": ""
   },
   "AI-GATEWAY-PROJECT.md": {
-    "mtime": 1782978334.6056027,
-    "ast_hash": "c860cf1f4dccf4bda04227384bda8a1a",
+    "mtime": 1782995472.6414967,
+    "ast_hash": "58478b2c3a29b779f9f528205e3f7e7f",
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1782995237.8710275,
-    "ast_hash": "469bff6f4218d022092fe6033d7edbfe",
+    "mtime": 1782996416.7810812,
+    "ast_hash": "f6b6d9f4a9f3eaea8c4c4375d6113bf7",
     "semantic_hash": ""
   },
   "README.md": {
@@ -195,8 +195,8 @@
     "semantic_hash": ""
   },
   "src/app/admin/(dashboard)/providers/page.tsx": {
-    "mtime": 1782994108.8809783,
-    "ast_hash": "c80ceb7af78afd7377ab5d63ce1c96ef",
+    "mtime": 1782995956.9935615,
+    "ast_hash": "b77c6bc5cbf75c3ac16f1e874d121861",
     "semantic_hash": ""
   },
   "src/app/admin/actions.ts": {
@@ -250,8 +250,8 @@
     "semantic_hash": ""
   },
   "src/server/routers/providers.ts": {
-    "mtime": 1782993926.027295,
-    "ast_hash": "4fce6fb022ecbcd133caa1c5040ea4db",
+    "mtime": 1782995856.523342,
+    "ast_hash": "2b42bc1a9c4371615742d7b615c80ce2",
     "semantic_hash": ""
   },
   "src/server/routers/stats.ts": {
@@ -290,8 +290,8 @@
     "semantic_hash": ""
   },
   "src/app/admin/i18n/en.ts": {
-    "mtime": 1782994002.7593021,
-    "ast_hash": "cc290b5b5ffe8a8d8a6ceb0f5f7aa63b",
+    "mtime": 1782995895.554878,
+    "ast_hash": "8a8b1b89b510fc6d133c4c3eac66c7a5",
     "semantic_hash": ""
   },
   "src/app/admin/i18n/helpers.ts": {
@@ -310,8 +310,8 @@
     "semantic_hash": ""
   },
   "src/app/admin/i18n/uk.ts": {
-    "mtime": 1782994018.6359918,
-    "ast_hash": "6ecc1d0646c1a2acc8df76689e139c21",
+    "mtime": 1782995919.8647559,
+    "ast_hash": "36ae6f625622882a151815b0ed48e65d",
     "semantic_hash": ""
   },
   "src/app/admin/icons.tsx": {
@@ -352,6 +352,11 @@
   "Resources/inventory_sync_design_guideline.md": {
     "mtime": 1782983912.5808349,
     "ast_hash": "0ac108fa37b01c151fa417b41bf96880",
+    "semantic_hash": ""
+  },
+  "migrations/004_provider_delete.sql": {
+    "mtime": 1782995800.852687,
+    "ast_hash": "fc9d2c8b92d8156d8880a5442d0d6cb2",
     "semantic_hash": ""
   }
 }

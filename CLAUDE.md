@@ -9,6 +9,7 @@ Multi-tenant OpenAI-compatible gateway to free LLM providers. One Next.js app se
 - Provider secrets: either env vars (`GROQ_API_KEY` etc., built-in providers only) or AES-256-GCM-encrypted rows in `provider_api_keys` (`src/lib/crypto.ts`) — never hardcoded, never plaintext in DB
 - New provider with a bespoke API shape (non-OpenAI-compatible, e.g. Gemini): implement `ProviderAdapter` in `src/lib/providers/<name>.ts`, add to `src/lib/providers/index.ts` registry, add a `providers` DB row. New OpenAI-compatible provider (most free-tier services): just add it through the admin panel (Providers → Add provider) — no code needed, it's served by the generic adapter in `providers/openai-compatible.ts`
 - A provider can have multiple API keys (`provider_api_keys`, admin-managed); router.ts round-robins across them and retries the next key on failure before moving to the next provider
+- Only custom (admin-added) providers can be deleted (`providers.remove`, guarded server-side against built-in ids) — built-in providers can only be deactivated. Deleting a provider cascades its keys and nulls `request_logs.provider_id` (`ON DELETE SET NULL`) rather than deleting historical logs
 - `/admin/*` routes require a valid `admin_session` cookie (checked in `middleware.ts` and again in every `adminProcedure`) — never add an `/admin/*` page or tRPC procedure that skips this
 - Admin panel UI/design work must follow `Resources/inventory_sync_design_guideline.md` (dark B2B theme, `#F26E21` accent — tokens live in `globals.css` under `.admin-theme`)
 - Architecture decisions in `AI-GATEWAY-PROJECT.md §6` are final — don't re-propose alternatives
@@ -65,7 +66,7 @@ scripts/create-project.ts             — project creation CLI
 
 ## DB tables
 `projects` · `providers` · `provider_api_keys` · `request_logs` · `daily_stats` · `response_cache` · `rate_limit_state`
-Full DDL → `migrations/001_initial.sql` (+ `002_add_providers.sql`, `003_provider_api_keys.sql`)
+Full DDL → `migrations/001_initial.sql` (+ `002_add_providers.sql`, `003_provider_api_keys.sql`, `004_provider_delete.sql`)
 
 ## Development phases
 - **1 ✅ Core Gateway** — auth, Groq adapter, logging
