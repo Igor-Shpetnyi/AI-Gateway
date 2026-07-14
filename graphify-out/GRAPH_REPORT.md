@@ -1,16 +1,16 @@
 # Graph Report - AI-Gateway  (2026-07-14)
 
 ## Corpus Check
-- 88 files · ~30,796 words
+- 88 files · ~31,510 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 409 nodes · 546 edges · 35 communities (26 shown, 9 thin omitted)
+- 415 nodes · 552 edges · 35 communities (26 shown, 9 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 5 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `c8d252f3`
+- Built from commit: `7e903c40`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -57,8 +57,8 @@
 6. `/graphify` - 11 edges
 7. `GatewayError` - 11 edges
 8. `scripts` - 10 edges
-9. `graphify reference: extra exports and benchmark` - 8 edges
-10. `AI Gateway` - 8 edges
+9. `AI Gateway` - 9 edges
+10. `graphify reference: extra exports and benchmark` - 8 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `healthCheck()` --calls--> `createOpenAICompatibleAdapter()`  [EXTRACTED]
@@ -118,12 +118,12 @@ Cohesion: 0.33
 Nodes (4): geistMono, geistSans, inter, metadata
 
 ### Community 11 - "README.md"
-Cohesion: 0.50
-Nodes (3): Deploy on Vercel, Getting Started, Learn More
+Cohesion: 0.20
+Nodes (9): AI Gateway, Документація, Задача і ціль, Концепція, Стан розробки, Стек, Швидкий старт, Що необхідно ще (на моє бачення) (+1 more)
 
 ### Community 15 - "admin-auth.ts"
-Cohesion: 0.14
-Nodes (16): login(), bytesToHex(), constantTimeEqual(), createSessionToken(), encoder, getSigningKey(), hexToBytes(), verifyAdminPassword() (+8 more)
+Cohesion: 0.13
+Nodes (17): login(), logout(), bytesToHex(), constantTimeEqual(), createSessionToken(), encoder, getSigningKey(), hexToBytes() (+9 more)
 
 ### Community 17 - "trpc.ts"
 Cohesion: 0.11
@@ -135,7 +135,7 @@ Nodes (10): healthCheck(), createOpenAICompatibleAdapter(), trpc, AppRouter, cha
 
 ### Community 19 - "admin-auth.ts"
 Cohesion: 0.13
-Nodes (15): logout(), AdminLayout(), Dict, en, LanguageContext, LanguageProvider(), LANGS, LanguageSwitcher() (+7 more)
+Nodes (14): AdminLayout(), Dict, en, LanguageContext, LanguageProvider(), LANGS, LanguageSwitcher(), getServerLang() (+6 more)
 
 ### Community 20 - "dependencies"
 Cohesion: 0.10
@@ -170,7 +170,7 @@ Cohesion: 0.50
 Nodes (3): For --cluster-only, For --update (incremental re-extraction), graphify reference: incremental update and cluster-only
 
 ## Knowledge Gaps
-- **182 isolated node(s):** `graphify`, `Usage`, `What graphify is for`, `Step 0 - GitHub repos and multi-path merge (only if a URL or several paths)`, `Step 1 - Ensure graphify is installed` (+177 more)
+- **187 isolated node(s):** `Задача і ціль`, `Концепція`, `Стек`, `Стан розробки`, `Що реалізовано` (+182 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **9 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -181,8 +181,8 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.019) - this node is a cross-community bridge._
 - **Why does `dependencies` connect `dependencies` to `devDependencies`?**
   _High betweenness centrality (0.010) - this node is a cross-community bridge._
-- **What connects `graphify`, `Usage`, `What graphify is for` to the rest of the system?**
-  _182 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `Задача і ціль`, `Концепція`, `Стек` to the rest of the system?**
+  _187 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `devDependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.06060606060606061 - nodes in this community are weakly interconnected._
 - **Should `scripts` be split into smaller, more focused modules?**
