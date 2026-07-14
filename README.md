@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Gateway
 
-## Getting Started
+Мультитенантний OpenAI-сумісний шлюз до безкоштовних LLM-провайдерів (Groq, Google Gemini, OpenRouter + будь-який OpenAI-сумісний API). Один Next.js застосунок обслуговує і сам gateway API (`/v1/*`), і адмін-панель управління (`/admin/*`).
 
-First, run the development server:
+## Задача і ціль
+
+У пет-проєктів часто є потреба стукатись до LLM, але платити за кожен окремо — недоцільно, а вручну жонглювати безкоштовними лімітами (rpm/rpd) різних провайдерів у кожному проєкті окремо — незручно й неможливо масштабувати. AI Gateway вирішує це одним шаром між пет-проєктами і провайдерами:
+
+- Пет-проєкт отримує один `gw_live_<hex>` ключ і звертається до `/v1/chat/completions` за OpenAI-сумісним контрактом — не знаючи і не дбаючи, який реальний провайдер відповість.
+- Gateway сам вибирає провайдера за пріоритетом, ротує між кількома ключами одного провайдера, кешує повторювані відповіді і рахує ліміти — так один безкоштовний тариф "розтягується" на кілька ключів і кілька провайдерів, а квота пет-проєкту контролюється централізовано.
+
+## Концепція
+
+- **`/v1/*`** — сам gateway. Кожен запит проходить `authenticate → checkQuota → перевірка кешу → route (на промасі) → логування`. Це закріплений інваріант, змінювати без прямого запиту не можна (див. `CLAUDE.md`).
+- **`/admin/*`** — панель управління тим самим інстансом: проєкти, провайдери, ключі, логи, дашборд, чат-плейграунд. Захищена паролем + підписаною сесійною кукою.
+- **Провайдери** — або вбудований `ProviderAdapter` в коді (Groq, Gemini — під нестандартний API), або будь-який OpenAI-сумісний сервіс, доданий через адмінку без єдиного рядка коду (`openai-compatible.ts` — універсальний адаптер).
+- **Ключі провайдерів** зберігаються виключно в БД (AES-256-GCM, `provider_api_keys`), додаються тільки через адмінку — жодних env-змінних з секретами. Один провайдер може мати кілька ключів; router ротує між ними і ретраїть наступний при відмові.
+- **Стійкість до відмов**: rate-limit і circuit breaker працюють на двох рівнях — на провайдера в цілому і на кожен ключ окремо, тож один "мертвий" ключ не блокує решту ротації.
+
+## Стек
+
+TypeScript · Next.js 16 (App Router) · postgres.js (сирий SQL, без ORM) · Zod · pnpm · tRPC v11 + React Query (admin API) · Tailwind v4
+
+## Стан розробки
+
+| Фаза | Стан | Що входить |
+|---|---|---|
+| 1. Core Gateway | ✅ | auth, Groq-адаптер, логування |
+| 2. Provider Pool | ✅ | Gemini + OpenRouter, circuit breaker, sliding-window rate limiter |
+| 3. Cache | ✅ | response cache з TTL за temperature |
+| 4. Admin Panel | ✅ | дашборд, проєкти, провайдери, логи, tRPC API |
+| 4+. Розширення понад план | ✅ | чат-плейграунд, ключі виключно в БД, per-key circuit breaker, enforce allowed_models/allowed_ips, дизайн-аудит |
+| 5. Deploy | 🟡 частково | Dockerfile + standalone build готові, cron-скрипти написані — **не задеплоєно** |
+| 6. Підключення пет-проєктів | ⬜ | поки що тільки тестовий проєкт |
+
+## Що реалізовано
+
+**Gateway API**
+- `POST /v1/chat/completions`, автентифікація за `gw_live_` ключем (SHA-256 hash, `timingSafeEqual`)
+- Квоти на проєкт (денна/місячна), обмеження за дозволеними моделями та IP (`allowed_models`/`allowed_ips`)
+- Роутинг за пріоритетом провайдерів, ротація ключів усередині провайдера, ретраї
+- Response cache (ключ = модель+повідомлення+temperature, TTL залежить від "детермінованості" запиту)
+- Circuit breaker на рівні провайдера *і* на рівні окремого ключа
+- Типізовані помилки (`GatewayError` з кодами: `UNAUTHORIZED`, `QUOTA_EXCEEDED`, `MODEL_UNAVAILABLE`, `MODEL_NOT_ALLOWED`, `ALL_PROVIDERS_DOWN`, `RATE_LIMITED`)
+
+**Адмін-панель**
+- Дашборд з ключовими метриками і станом провайдерів у реальному часі
+- Проєкти: створення, квоти, обмеження за моделями/IP
+- Провайдери: пріоритет, ліміти, статус, кілька AES-256-GCM-ключів на провайдера з індикатором використання за сьогодні, кнопка миттєвої перевірки ключа перед збереженням
+- Логи запитів з фільтрами і пагінацією
+- Чат-плейграунд (`/admin/chat`) — розмова з AI напряму через налаштовані ключі, з вибором конкретного провайдера/моделі (живий список моделей з API провайдера) і збереженням історії
+- EN/UK інтерфейс, стабільна темна B2B-тема
+
+**Інфраструктура**
+- 8 SQL-міграцій, сирий `postgres.js` без ORM
+- `Dockerfile` + `output: standalone` для контейнерного деплою
+- Cron-скрипти: `health-check` (проактивна перевірка провайдерів), `aggregate-stats` (згортання `daily_stats` + чистка старих логів/кешу)
+- graphify — граф знань кодової бази для швидшої навігації ШІ-агентів по репозиторію
+
+## Що необхідно ще (на моє бачення)
+
+1. **Реальний деплой** — Dockerfile і cron-скрипти вже готові, але сам застосунок ще ніде не запущено в проді (Northflank + Cloudflare за планом у `AI-GATEWAY-PROJECT.md §8`); cron-скрипти написані, але ще не заплановані як фактичні Northflank Cron Jobs
+2. **Автоматизовані тести** — у проєкті взагалі немає test runner'а й жодного тесту; вся перевірка досі ручна/через живі запити
+3. **`middleware.ts` → `proxy.ts`** — Next.js 16 позначив `middleware.ts` застарілим (саме на ньому тримається захист `/admin/*`), варто мігрувати до релізу
+4. **Markdown у чат-плейграунді** — відповіді моделей рендеряться як сирий текст; списки/жирний шрифт від LLM показуються буквально
+5. **Дашборд не використовує `daily_stats`** — таблиця вже наповнюється cron'ом, але жодного тренду за кілька днів в UI ще немає
+6. **Фаза 6** — підключення реальних пет-проєктів замість тестового; наразі до gateway ніхто, крім тестового проєкту, не під'єднаний
+7. **Адмінка не адаптивна** — свідомо десктопний B2B-інструмент, без підтримки вузьких/мобільних екранів
+8. **Портативність graphify-хуків** — `.claude/settings.json` зараз посилається на абсолютний шлях до `graphify.exe` конкретної машини; на іншому комп'ютері доведеться перевстановити
+
+## Швидкий старт
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+docker compose up -d db                # локальний PostgreSQL
+pnpm install
+pnpm db:migrate                        # потрібен .env.local (див. .env.local.example)
+pnpm dev                               # dev-сервер на :3000
+pnpm db:create-project <name>          # створити тестовий проєкт і отримати gw_live_ ключ
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Provider-ключі (Groq/Gemini/OpenRouter/кастомні) додаються **виключно** через адмін-панель: `/admin/providers` → «Керувати ключами» — жодних env-змінних із секретами.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Документація
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [`CLAUDE.md`](./CLAUDE.md) — інваріанти архітектури, структура коду, команди — довідник для розробки з ШІ-агентом
+- [`AI-GATEWAY-PROJECT.md`](./AI-GATEWAY-PROJECT.md) — повне архітектурне рішення, схема БД, план деплою
+- [`Resources/inventory_sync_design_guideline.md`](./Resources/inventory_sync_design_guideline.md) — дизайн-гайдлайн адмін-панелі
