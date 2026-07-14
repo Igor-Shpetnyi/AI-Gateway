@@ -9,10 +9,7 @@ export function createOpenAICompatibleAdapter(id: string, name: string, baseUrl:
     id,
     name,
 
-    // No env var fallback for custom providers — they only ever get keys via the DB
-    isConfigured: () => false,
-
-    async chat(messages: ChatMessage[], options: ChatOptions, apiKey?: string): Promise<ChatResponse> {
+    async chat(messages: ChatMessage[], options: ChatOptions, apiKey: string): Promise<ChatResponse> {
       if (!apiKey) throw new Error(`${name} has no API key configured`)
 
       const res = await fetch(`${baseUrl.replace(/\/$/, '')}/chat/completions`, {
@@ -56,6 +53,21 @@ export function createOpenAICompatibleAdapter(id: string, name: string, baseUrl:
         promptTokens: data.usage.prompt_tokens,
         completionTokens: data.usage.completion_tokens,
         provider: id,
+      }
+    },
+
+    // Not every OpenAI-compatible endpoint implements GET /models — fail soft
+    // so the chat UI can fall back to a free-text model field.
+    async listModels(apiKey: string): Promise<string[]> {
+      try {
+        const res = await fetch(`${baseUrl.replace(/\/$/, '')}/models`, {
+          headers: { Authorization: `Bearer ${apiKey}` },
+        })
+        if (!res.ok) return []
+        const data = (await res.json()) as { data: { id: string }[] }
+        return data.data.map((m) => m.id)
+      } catch {
+        return []
       }
     },
   }

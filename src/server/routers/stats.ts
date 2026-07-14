@@ -17,6 +17,7 @@ export const statsRouter = router({
           COUNT(*) FILTER (WHERE is_active)::text AS active,
           COUNT(*)::text AS total
         FROM projects
+        WHERE is_system = false
       `,
       sql<{ id: string; name: string; status: string; is_active: boolean }[]>`
         SELECT id, name, status, is_active FROM providers ORDER BY priority

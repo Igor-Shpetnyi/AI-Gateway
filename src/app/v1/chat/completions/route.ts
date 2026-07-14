@@ -21,7 +21,8 @@ const RequestSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    const project = await authenticate(request.headers.get('authorization'))
+    const clientIp = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? null
+    const project = await authenticate(request.headers.get('authorization'), clientIp)
 
     let body: unknown
     try {
@@ -42,6 +43,19 @@ export async function POST(request: NextRequest) {
     }
 
     await checkQuota(project.id, project.daily_quota)
+
+    if (project.allowed_models && project.allowed_models.length > 0) {
+      if (model === 'auto') {
+        throw new GatewayError(
+          'MODEL_NOT_ALLOWED',
+          'This project restricts models — specify one of the allowed models explicitly ("auto" is not permitted)',
+          403
+        )
+      }
+      if (!project.allowed_models.includes(model)) {
+        throw new GatewayError('MODEL_NOT_ALLOWED', `Model "${model}" is not in this project's allowed list`, 403)
+      }
+    }
 
     const key = cacheKey(model, messages, temperature)
     const cached = await getCachedResponse(key)

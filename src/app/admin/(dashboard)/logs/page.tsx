@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { trpc } from '@/lib/trpc'
 import { useI18n } from '../../i18n/LanguageProvider'
 import { requestStatusLabel } from '../../i18n/helpers'
+import { QueryError } from '../../query-error'
 
 const STATUS_STYLES: Record<string, string> = {
   success: 'bg-success/15 text-success',
@@ -26,7 +27,7 @@ export default function LogsPage() {
   const [cursor, setCursor] = useState(0)
 
   const { data: filterOptions } = trpc.logs.filterOptions.useQuery()
-  const { data, isLoading, isFetching } = trpc.logs.list.useQuery({
+  const { data, isLoading, isFetching, isError, refetch } = trpc.logs.list.useQuery({
     cursor,
     projectId: projectId || undefined,
     providerId: providerId || undefined,
@@ -76,7 +77,10 @@ export default function LogsPage() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-surface-border bg-surface">
+      {isError ? (
+        <QueryError onRetry={refetch} />
+      ) : (
+      <div className="overflow-x-auto rounded-2xl border border-surface-border bg-surface">
         {isLoading ? (
           <p className="p-5 text-sm text-muted">{t.common.loading}</p>
         ) : (
@@ -126,7 +130,9 @@ export default function LogsPage() {
           </table>
         )}
       </div>
+      )}
 
+      {!isError && (
       <div className="flex items-center gap-3">
         <button
           type="button"
@@ -145,6 +151,7 @@ export default function LogsPage() {
           {isFetching ? t.common.loading : t.common.next}
         </button>
       </div>
+      )}
     </div>
   )
 }

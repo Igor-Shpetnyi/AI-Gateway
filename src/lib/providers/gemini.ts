@@ -9,10 +9,8 @@ export const geminiProvider: ProviderAdapter = {
   id: 'gemini',
   name: 'Google Gemini',
 
-  isConfigured: () => !!process.env.GEMINI_API_KEY,
-
-  async chat(messages: ChatMessage[], options: ChatOptions, apiKey = process.env.GEMINI_API_KEY): Promise<ChatResponse> {
-    if (!apiKey) throw new Error('GEMINI_API_KEY is not configured')
+  async chat(messages: ChatMessage[], options: ChatOptions, apiKey: string): Promise<ChatResponse> {
+    if (!apiKey) throw new Error('Gemini: no active API key — add one in Providers → Manage keys')
     const model = options.model === 'auto' ? DEFAULT_MODEL : options.model
 
     // Gemini uses systemInstruction for system messages, separate from contents
@@ -70,5 +68,16 @@ export const geminiProvider: ProviderAdapter = {
       completionTokens: data.usageMetadata.candidatesTokenCount,
       provider: 'gemini',
     }
+  },
+
+  async listModels(apiKey: string): Promise<string[]> {
+    const res = await fetch(`${BASE_URL}/models?key=${apiKey}`)
+    if (!res.ok) throw new Error(`Gemini models list error ${res.status}`)
+    const data = (await res.json()) as {
+      models: { name: string; supportedGenerationMethods?: string[] }[]
+    }
+    return data.models
+      .filter((m) => m.supportedGenerationMethods?.includes('generateContent'))
+      .map((m) => m.name.replace(/^models\//, ''))
   },
 }

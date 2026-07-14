@@ -6,14 +6,15 @@ Multi-tenant OpenAI-compatible gateway to free LLM providers. One Next.js app se
 - Every `/v1/*` route must follow: `authenticate` → `checkQuota` → check cache → `route` (on miss) → _(logging is inside router / cache path)_
 - Errors: always `throw new GatewayError(code, message, statusCode)` — never bare `new Error`
 - API keys: format `gw_live_<32 hex>`, stored as SHA-256 hash only, compared with `timingSafeEqual`
-- Provider secrets: either env vars (`GROQ_API_KEY` etc., built-in providers only) or AES-256-GCM-encrypted rows in `provider_api_keys` (`src/lib/crypto.ts`) — never hardcoded, never plaintext in DB
+- Provider secrets: exclusively AES-256-GCM-encrypted rows in `provider_api_keys` (`src/lib/crypto.ts`), added only through the admin panel (Providers → Manage keys) — no env var path, never hardcoded, never plaintext in DB. A provider with no active DB key is simply unusable until one is added
 - New provider with a bespoke API shape (non-OpenAI-compatible, e.g. Gemini): implement `ProviderAdapter` in `src/lib/providers/<name>.ts`, add to `src/lib/providers/index.ts` registry, add a `providers` DB row. New OpenAI-compatible provider (most free-tier services): just add it through the admin panel (Providers → Add provider) — no code needed, it's served by the generic adapter in `providers/openai-compatible.ts`
 - A provider can have multiple API keys (`provider_api_keys`, admin-managed); router.ts round-robins across them and retries the next key on failure before moving to the next provider
-- Both `requests_per_minute` and `requests_per_day` are enforced per (provider, key) — each key gets its own in-memory per-minute bucket and its own DB-counted daily count (`request_logs.provider_key_id`, NULL = the env-var fallback key). `provider_api_keys.requests_per_minute`/`requests_per_day` optionally override the provider's defaults for that one key (NULL = inherit); this is what lets N keys multiply a provider's throughput instead of sharing one shared budget
+- Both `requests_per_minute` and `requests_per_day` are enforced per (provider, key) — each key gets its own in-memory per-minute bucket and its own DB-counted daily count (`request_logs.provider_key_id`). `provider_api_keys.requests_per_minute`/`requests_per_day` optionally override the provider's defaults for that one key (NULL = inherit); this is what lets N keys multiply a provider's throughput instead of sharing one shared budget
 - Only custom (admin-added) providers can be deleted (`providers.remove`, guarded server-side against built-in ids) — built-in providers can only be deactivated. Deleting a provider cascades its keys and nulls `request_logs.provider_id` (`ON DELETE SET NULL`) rather than deleting historical logs
 - `/admin/*` routes require a valid `admin_session` cookie (checked in `middleware.ts` and again in every `adminProcedure`) — never add an `/admin/*` page or tRPC procedure that skips this
 - Admin panel UI/design work must follow `Resources/inventory_sync_design_guideline.md` (dark B2B theme, `#F26E21` accent — tokens live in `globals.css` under `.admin-theme`)
 - Architecture decisions in `AI-GATEWAY-PROJECT.md §6` are final — don't re-propose alternatives
+- `scripts/*.ts` (migrate, create-project, cron jobs) never import `@/lib/db` — that singleton is hot-reload-safe for the Next.js dev server, not meant for one-shot CLI processes. Scripts open their own `postgres(url)` connection and `sql.end()` it when done; they may still import pure modules with no DB dependency (e.g. `src/lib/providers/*`, `src/lib/crypto.ts`)
 
 ## Stack
 TypeScript · Next.js 16 (App Router) · postgres.js (raw SQL, no ORM) · Zod · pnpm · tRPC v11 + React Query (admin API)
@@ -24,6 +25,8 @@ pnpm dev                              # dev server :3000
 docker compose up -d db               # local PostgreSQL
 pnpm db:migrate                       # run migrations (needs .env.local)
 pnpm db:create-project <name>         # create project + print API key
+pnpm cron:health-check                # probe active providers, update providers.status/circuit_breaker_until
+pnpm cron:aggregate-stats             # roll completed days into daily_stats, prune old request_logs/response_cache
 ```
 
 ## Source layout
@@ -37,7 +40,7 @@ src/lib/
   crypto.ts       AES-256-GCM encrypt/decrypt/mask for provider_api_keys (key: ENCRYPTION_KEY env)
   router.ts       provider selection loop, per-key rotation + per-minute/per-day rate limiting + request logging (exports logRequest)
   providers/
-    types.ts      ProviderAdapter interface (id, name, isConfigured, chat(msgs, opts, apiKey?)) + ChatMessage/ChatOptions/ChatResponse
+    types.ts      ProviderAdapter interface (id, name, chat(msgs, opts, apiKey), listModels(apiKey)) + ChatMessage/ChatOptions/ChatResponse
     groq.ts       Groq adapter (model:"auto" → llama-3.1-8b-instant)
     openai-compatible.ts  generic adapter factory for admin-added custom providers (base_url + DB key)
     index.ts      code adapter registry, keyed by id — routing order/active/limits come from DB `providers` table, not here
@@ -63,6 +66,8 @@ src/app/v1/chat/completions/route.ts  — POST /v1/chat/completions (main endpoi
 migrations/001_initial.sql            — full schema DDL + Groq seed
 scripts/migrate.ts                    — migration runner
 scripts/create-project.ts             — project creation CLI
+scripts/health-check.ts               — cron: probes each active provider via listModels(), updates providers.status
+scripts/aggregate-stats.ts            — cron: rolls request_logs into daily_stats, prunes old logs/expired cache
 ```
 
 ## DB tables

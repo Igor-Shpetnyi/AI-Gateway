@@ -7,6 +7,7 @@ import { useI18n } from '../../i18n/LanguageProvider'
 import { statusLabel } from '../../i18n/helpers'
 import type { Dict } from '../../i18n/dictionaries'
 import { ProviderKeysPanel } from './provider-keys-panel'
+import { QueryError } from '../../query-error'
 
 type ProviderRow = {
   id: string
@@ -31,7 +32,7 @@ const STATUS_STYLES: Record<string, string> = {
 export default function ProvidersPage() {
   const { t } = useI18n()
   const utils = trpc.useUtils()
-  const { data: providers, isLoading } = trpc.providers.list.useQuery()
+  const { data: providers, isLoading, isError, refetch } = trpc.providers.list.useQuery()
   const [expandedId, setExpandedId] = useState<string | null>(null)
 
   const [name, setName] = useState('')
@@ -142,7 +143,10 @@ export default function ProvidersPage() {
         </button>
       </form>
 
-      <div className="overflow-hidden rounded-2xl border border-surface-border bg-surface">
+      {isError ? (
+        <QueryError onRetry={refetch} />
+      ) : (
+      <div className="overflow-x-auto rounded-2xl border border-surface-border bg-surface">
         {isLoading ? (
           <p className="p-5 text-sm text-muted">{t.common.loading}</p>
         ) : (
@@ -179,6 +183,7 @@ export default function ProvidersPage() {
           </table>
         )}
       </div>
+      )}
     </div>
   )
 }
@@ -211,11 +216,7 @@ function ProviderRowView({
   const [rpd, setRpd] = useState(String(provider.requests_per_day))
 
   const circuitOpen = provider.circuit_breaker_until && new Date(provider.circuit_breaker_until) > new Date()
-  const keyStatusText = provider.isConfigured
-    ? t.providers.keyConfigured
-    : provider.isCustom
-      ? t.providers.keysNoneCustom
-      : t.providers.keyMissing
+  const keyStatusText = provider.isConfigured ? t.providers.keyConfigured : t.providers.keysNoneCustom
 
   return (
     <>
@@ -312,7 +313,6 @@ function ProviderRowView({
             <ProviderKeysPanel
               t={t}
               providerId={provider.id}
-              isCustom={provider.isCustom}
               defaultRpm={provider.requests_per_minute}
               defaultRpd={provider.requests_per_day}
             />

@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
-import { DashboardIcon, ProjectsIcon, ProvidersIcon, LogsIcon, LogoutIcon } from './icons'
+import { DashboardIcon, ProjectsIcon, ProvidersIcon, LogsIcon, ChatIcon, LogoutIcon } from './icons'
 import { useI18n } from './i18n/LanguageProvider'
 import { LanguageSwitcher } from './i18n/LanguageSwitcher'
 import type { Dict } from './i18n/dictionaries'
@@ -14,6 +14,7 @@ function navItems(t: Dict) {
     { href: '/admin/projects', label: t.sidebar.navProjects, Icon: ProjectsIcon },
     { href: '/admin/providers', label: t.sidebar.navProviders, Icon: ProvidersIcon },
     { href: '/admin/logs', label: t.sidebar.navLogs, Icon: LogsIcon },
+    { href: '/admin/chat', label: t.sidebar.navChat, Icon: ChatIcon },
   ]
 }
 

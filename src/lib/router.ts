@@ -4,9 +4,16 @@ import { providers } from './providers'
 import { createOpenAICompatibleAdapter } from './providers/openai-compatible'
 import { decryptSecret } from './crypto'
 import { GatewayError } from './errors'
-import { isCircuitOpen, onProviderSuccess, onProviderFailure } from './circuit-breaker'
+import {
+  isCircuitOpen,
+  onProviderSuccess,
+  onProviderFailure,
+  isKeyCircuitOpen,
+  onKeySuccess,
+  onKeyFailure,
+} from './circuit-breaker'
 import { isProviderRateLimited, recordProviderCall } from './rate-limiter'
-import type { ChatMessage, ChatOptions, ChatResponse, ProviderAdapter } from './providers/types'
+import type { ChatMessage, ChatOptions, ChatResponse } from './providers/types'
 
 interface ProviderConfig {
   id: string
@@ -18,7 +25,7 @@ interface ProviderConfig {
 
 interface ResolvedKey {
   keyId: string
-  apiKey: string | undefined // undefined = let the adapter fall back to its own env var
+  apiKey: string
   requestsPerMinute: number | null // null = inherit the provider's default
   requestsPerDay: number | null // null = inherit the provider's default
 }
@@ -32,7 +39,10 @@ async function getActiveProviderConfigs(): Promise<ProviderConfig[]> {
   `
 }
 
-async function getKeysForProvider(providerId: string, adapter: ProviderAdapter): Promise<ResolvedKey[]> {
+// Keys live exclusively in provider_api_keys, added only through the admin
+// panel — no env var fallback. A provider with no active DB key is simply
+// unusable until one is added.
+export async function getKeysForProvider(providerId: string): Promise<ResolvedKey[]> {
   const rows = await sql<
     { id: string; key_encrypted: string; requests_per_minute: number | null; requests_per_day: number | null }[]
   >`
@@ -41,19 +51,12 @@ async function getKeysForProvider(providerId: string, adapter: ProviderAdapter):
     ORDER BY created_at
   `
 
-  if (rows.length > 0) {
-    return rows.map((row) => ({
-      keyId: row.id,
-      apiKey: decryptSecret(row.key_encrypted),
-      requestsPerMinute: row.requests_per_minute,
-      requestsPerDay: row.requests_per_day,
-    }))
-  }
-
-  // No DB-managed keys — fall back to the code adapter's own env var, if any
-  return adapter.isConfigured()
-    ? [{ keyId: 'env', apiKey: undefined, requestsPerMinute: null, requestsPerDay: null }]
-    : []
+  return rows.map((row) => ({
+    keyId: row.id,
+    apiKey: decryptSecret(row.key_encrypted),
+    requestsPerMinute: row.requests_per_minute,
+    requestsPerDay: row.requests_per_day,
+  }))
 }
 
 // Daily limits can't live in memory like the per-minute ones — a day-long
@@ -61,13 +64,11 @@ async function getKeysForProvider(providerId: string, adapter: ProviderAdapter):
 // point. Counted from request_logs instead, same approach as quota.ts's
 // per-project daily quota.
 async function isOverDailyLimit(providerId: string, keyId: string, dailyLimit: number): Promise<boolean> {
-  const keyFilter = keyId === 'env' ? sql`provider_key_id IS NULL` : sql`provider_key_id = ${keyId}`
-
   const rows = await sql<{ count: string }[]>`
     SELECT COUNT(*)::text AS count
     FROM request_logs
     WHERE provider_id = ${providerId}
-      AND ${keyFilter}
+      AND provider_key_id = ${keyId}
       AND status = 'success'
       AND created_at >= CURRENT_DATE
       AND created_at < CURRENT_DATE + INTERVAL '1 day'
@@ -90,17 +91,23 @@ function rotationOrder(providerId: string, count: number): number[] {
 export async function route(
   projectId: string,
   messages: ChatMessage[],
-  options: ChatOptions
+  options: ChatOptions,
+  forceProviderId?: string
 ): Promise<ChatResponse> {
   const configs = await getActiveProviderConfigs()
+  const targetConfigs = forceProviderId ? configs.filter((c) => c.id === forceProviderId) : configs
+  if (forceProviderId && targetConfigs.length === 0) {
+    throw new GatewayError('ALL_PROVIDERS_DOWN', `Provider "${forceProviderId}" is not active`, 503)
+  }
+
   let lastError: Error | null = null
   let allSkipped = true
 
-  for (const config of configs) {
+  for (const config of targetConfigs) {
     const adapter = providers[config.id] ?? createOpenAICompatibleAdapter(config.id, config.name, config.base_url)
 
-    const keys = await getKeysForProvider(config.id, adapter)
-    if (keys.length === 0) continue // not configured at all — no DB keys, no env var
+    const keys = await getKeysForProvider(config.id)
+    if (keys.length === 0) continue // not configured — no active DB key
 
     // Skip if circuit breaker is open (provider-wide, trips after exhausting all keys repeatedly)
     if (await isCircuitOpen(config.id)) {
@@ -115,6 +122,13 @@ export async function route(
       const bucket = `${config.id}:${keyId}`
       const effectiveRpm = requestsPerMinute ?? config.requests_per_minute
       const effectiveRpd = requestsPerDay ?? config.requests_per_day
+
+      // Skip if this specific key's own circuit is open (isolated from its siblings)
+      if (await isKeyCircuitOpen(keyId)) {
+        console.info(`[Router] Skipping ${config.id} key ${keyId} — key circuit open`)
+        lastError = new Error(`${adapter.name} key temporarily disabled after repeated failures`)
+        continue
+      }
 
       // Skip if this specific key is at its per-minute rate limit
       if (isProviderRateLimited(bucket, effectiveRpm)) {
@@ -133,17 +147,17 @@ export async function route(
       attemptedAnyKey = true
       allSkipped = false
       const start = Date.now()
-      const providerKeyId = keyId === 'env' ? null : keyId
 
       try {
         recordProviderCall(bucket)
         const response = await adapter.chat(messages, options, apiKey)
 
         await onProviderSuccess(config.id)
+        await onKeySuccess(keyId)
         await logRequest({
           projectId,
           providerId: config.id,
-          providerKeyId,
+          providerKeyId: keyId,
           model: response.model,
           promptTokens: response.promptTokens,
           completionTokens: response.completionTokens,
@@ -158,7 +172,7 @@ export async function route(
         await logRequest({
           projectId,
           providerId: config.id,
-          providerKeyId,
+          providerKeyId: keyId,
           model: options.model,
           promptTokens: 0,
           completionTokens: 0,
@@ -170,6 +184,7 @@ export async function route(
         // MODEL_UNAVAILABLE is propagated immediately — no point trying other keys or providers
         if (err instanceof GatewayError && err.code === 'MODEL_UNAVAILABLE') throw err
 
+        await onKeyFailure(keyId)
         lastError = error
         // try the next key for this same provider
       }

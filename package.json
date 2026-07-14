@@ -9,6 +9,8 @@
     "lint": "eslint",
     "db:migrate": "tsx --env-file=.env.local scripts/migrate.ts",
     "db:create-project": "tsx --env-file=.env.local scripts/create-project.ts",
+    "cron:health-check": "tsx --env-file=.env.local scripts/health-check.ts",
+    "cron:aggregate-stats": "tsx --env-file=.env.local scripts/aggregate-stats.ts",
     "graphify:update": "graphify update ./src"
   },
   "dependencies": {

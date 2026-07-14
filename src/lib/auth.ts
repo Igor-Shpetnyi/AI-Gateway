@@ -8,10 +8,11 @@ interface Project {
   daily_quota: number | null
   monthly_quota: number | null
   allowed_models: string[] | null
+  allowed_ips: string[] | null
   api_key_hash: string
 }
 
-export async function authenticate(authHeader: string | null): Promise<Project> {
+export async function authenticate(authHeader: string | null, clientIp: string | null): Promise<Project> {
   if (!authHeader?.startsWith('Bearer ')) {
     throw new GatewayError('UNAUTHORIZED', 'Missing or invalid Authorization header', 401)
   }
@@ -25,7 +26,7 @@ export async function authenticate(authHeader: string | null): Promise<Project> 
   const keyHash = crypto.createHash('sha256').update(key).digest('hex')
 
   const rows = await sql<Project[]>`
-    SELECT id, name, daily_quota, monthly_quota, allowed_models, api_key_hash
+    SELECT id, name, daily_quota, monthly_quota, allowed_models, allowed_ips, api_key_hash
     FROM projects
     WHERE api_key_hash = ${keyHash}
     AND is_active = true
@@ -41,6 +42,10 @@ export async function authenticate(authHeader: string | null): Promise<Project> 
   const computedHash = Buffer.from(keyHash, 'hex')
   if (!crypto.timingSafeEqual(storedHash, computedHash)) {
     throw new GatewayError('UNAUTHORIZED', 'Invalid API key', 401)
+  }
+
+  if (project.allowed_ips && project.allowed_ips.length > 0 && !(clientIp && project.allowed_ips.includes(clientIp))) {
+    throw new GatewayError('UNAUTHORIZED', 'Request IP not allowed for this project', 403)
   }
 
   return project

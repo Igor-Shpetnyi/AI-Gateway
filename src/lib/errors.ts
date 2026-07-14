@@ -2,6 +2,7 @@ export type GatewayErrorCode =
   | 'UNAUTHORIZED'
   | 'QUOTA_EXCEEDED'
   | 'MODEL_UNAVAILABLE'
+  | 'MODEL_NOT_ALLOWED'
   | 'ALL_PROVIDERS_DOWN'
   | 'RATE_LIMITED'
 

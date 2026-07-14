@@ -13,10 +13,13 @@ export const projectsRouter = router({
         daily_quota: number | null
         monthly_quota: number | null
         created_at: Date
+        allowed_models: string[] | null
+        allowed_ips: string[] | null
       }[]
     >`
-      SELECT id, name, is_active, daily_quota, monthly_quota, created_at
+      SELECT id, name, is_active, daily_quota, monthly_quota, created_at, allowed_models, allowed_ips
       FROM projects
+      WHERE is_system = false
       ORDER BY created_at DESC
     `
   }),
@@ -60,6 +63,26 @@ export const projectsRouter = router({
       await sql`
         UPDATE projects
         SET daily_quota = ${input.dailyQuota}, monthly_quota = ${input.monthlyQuota}
+        WHERE id = ${input.id}
+      `
+    }),
+
+  // null = unrestricted for that dimension
+  updateRestrictions: adminProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        allowedModels: z.array(z.string()).nullable(),
+        allowedIps: z.array(z.string()).nullable(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      // postgres.js JSON-encodes the parameter itself once it sees a jsonb-cast
+      // position — passing an already-JSON.stringify()'d string here would
+      // double-encode it into a jsonb *string* instead of a jsonb *array*.
+      await sql`
+        UPDATE projects
+        SET allowed_models = ${sql.json(input.allowedModels)}, allowed_ips = ${sql.json(input.allowedIps)}
         WHERE id = ${input.id}
       `
     }),

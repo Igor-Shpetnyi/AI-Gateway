@@ -50,6 +50,41 @@ export function LogsIcon({ className }: IconProps) {
   )
 }
 
+export function ChatIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <path d="M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-4 4v-4H6a2 2 0 0 1-2-2V5Z" />
+    </svg>
+  )
+}
+
+export function ActivityIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <path d="M3 12h4l2.5-7L14 19l2.5-7H21" />
+    </svg>
+  )
+}
+
+export function TargetIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <circle cx="12" cy="12" r="8" />
+      <circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
+export function AlertIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <path d="M12 4 3 20h18L12 4Z" />
+      <path d="M12 10.5v4" />
+      <circle cx="12" cy="17" r="0.6" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
 export function LogoutIcon({ className }: IconProps) {
   return (
     <svg {...base} className={className}>

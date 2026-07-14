@@ -237,7 +237,8 @@ Northflank Dashboard → сервіс Gateway → **Environment** → **Environm
 **Інші обов'язкові змінні:**
 - `DATABASE_URL` — рядок підключення з Northflank Managed PostgreSQL addon
 - `ADMIN_PASSWORD` — стійкий пароль для входу в адмін-панель
-- `GROQ_API_KEY` / `GEMINI_API_KEY` / `OPENROUTER_API_KEY` — опційно, якщо провайдер налаштовується через env, а не через панель
+
+Provider API keys (Groq/Gemini/OpenRouter/кастомні) не задаються через env — вони додаються виключно через адмін-панель (Providers → Manage keys) і зберігаються AES-256-GCM-зашифрованими в `provider_api_keys`.
 
 ---
 

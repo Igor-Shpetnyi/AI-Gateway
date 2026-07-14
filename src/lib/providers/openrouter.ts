@@ -8,10 +8,8 @@ export const openrouterProvider: ProviderAdapter = {
   id: 'openrouter',
   name: 'OpenRouter',
 
-  isConfigured: () => !!process.env.OPENROUTER_API_KEY,
-
-  async chat(messages: ChatMessage[], options: ChatOptions, apiKey = process.env.OPENROUTER_API_KEY): Promise<ChatResponse> {
-    if (!apiKey) throw new Error('OPENROUTER_API_KEY is not configured')
+  async chat(messages: ChatMessage[], options: ChatOptions, apiKey: string): Promise<ChatResponse> {
+    if (!apiKey) throw new Error('OpenRouter: no active API key — add one in Providers → Manage keys')
     const model = options.model === 'auto' ? DEFAULT_MODEL : options.model
 
     const res = await fetch(`${BASE_URL}/chat/completions`, {
@@ -57,5 +55,20 @@ export const openrouterProvider: ProviderAdapter = {
       completionTokens: data.usage.completion_tokens,
       provider: 'openrouter',
     }
+  },
+
+  // Free-tier only — this gateway is specifically for free LLM providers, no
+  // point surfacing OpenRouter's much larger paid catalog in the picker.
+  async listModels(apiKey: string): Promise<string[]> {
+    const res = await fetch(`${BASE_URL}/models`, {
+      headers: { Authorization: `Bearer ${apiKey}` },
+    })
+    if (!res.ok) throw new Error(`OpenRouter models list error ${res.status}`)
+    const data = (await res.json()) as {
+      data: { id: string; pricing: { prompt: string; completion: string } }[]
+    }
+    return data.data
+      .filter((m) => m.pricing.prompt === '0' && m.pricing.completion === '0')
+      .map((m) => m.id)
   },
 }

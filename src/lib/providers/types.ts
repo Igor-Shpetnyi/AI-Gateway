@@ -21,9 +21,8 @@ export interface ChatResponse {
 export interface ProviderAdapter {
   id: string
   name: string
-  // env-var-only capability check, used as a fallback when no DB-managed key exists
-  isConfigured(): boolean
-  // apiKey comes from provider_api_keys (DB) when set; falls back to the
-  // adapter's own env var when omitted
-  chat(messages: ChatMessage[], options: ChatOptions, apiKey?: string): Promise<ChatResponse>
+  // apiKey always comes from provider_api_keys (DB) — no env var fallback
+  chat(messages: ChatMessage[], options: ChatOptions, apiKey: string): Promise<ChatResponse>
+  // real model ids currently available from this provider's own API, using an already-resolved key
+  listModels(apiKey: string): Promise<string[]>
 }

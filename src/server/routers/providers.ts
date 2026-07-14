@@ -4,6 +4,11 @@ import { TRPCError } from '@trpc/server'
 import { router, adminProcedure } from '../trpc'
 import { sql } from '@/lib/db'
 import { providers as adapterRegistry } from '@/lib/providers'
+import { createOpenAICompatibleAdapter } from '@/lib/providers/openai-compatible'
+import { getKeysForProvider } from '@/lib/router'
+
+const MODELS_CACHE_TTL_MS = 5 * 60 * 1000
+const modelsCache = new Map<string, { models: string[]; expiresAt: number }>()
 
 export const providersRouter = router({
   list: adminProcedure.query(async () => {
@@ -37,10 +42,39 @@ export const providersRouter = router({
         ...row,
         activeKeyCount,
         isCustom: !(row.id in adapterRegistry),
-        isConfigured: (adapterRegistry[row.id]?.isConfigured() ?? false) || activeKeyCount > 0,
+        isConfigured: activeKeyCount > 0,
       }
     })
   }),
+
+  listModels: adminProcedure
+    .input(z.object({ providerId: z.string() }))
+    .query(async ({ input }): Promise<{ models: string[] }> => {
+      const cached = modelsCache.get(input.providerId)
+      if (cached && cached.expiresAt > Date.now()) {
+        return { models: cached.models }
+      }
+
+      const keys = await getKeysForProvider(input.providerId)
+      if (keys.length === 0) return { models: [] }
+
+      const [row] = await sql<{ name: string; base_url: string }[]>`
+        SELECT name, base_url FROM providers WHERE id = ${input.providerId}
+      `
+      if (!row) return { models: [] }
+
+      const adapter =
+        adapterRegistry[input.providerId] ??
+        createOpenAICompatibleAdapter(input.providerId, row.name, row.base_url)
+
+      try {
+        const models = await adapter.listModels(keys[0].apiKey)
+        modelsCache.set(input.providerId, { models, expiresAt: Date.now() + MODELS_CACHE_TTL_MS })
+        return { models }
+      } catch {
+        return { models: [] }
+      }
+    }),
 
   create: adminProcedure
     .input(

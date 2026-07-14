@@ -7,10 +7,8 @@ export const groqProvider: ProviderAdapter = {
   id: 'groq',
   name: 'Groq',
 
-  isConfigured: () => !!process.env.GROQ_API_KEY,
-
-  async chat(messages: ChatMessage[], options: ChatOptions, apiKey = process.env.GROQ_API_KEY): Promise<ChatResponse> {
-    if (!apiKey) throw new Error('GROQ_API_KEY is not configured')
+  async chat(messages: ChatMessage[], options: ChatOptions, apiKey: string): Promise<ChatResponse> {
+    if (!apiKey) throw new Error('Groq: no active API key — add one in Providers → Manage keys')
 
     const model = options.model === 'auto' ? DEFAULT_MODEL : options.model
 
@@ -56,5 +54,14 @@ export const groqProvider: ProviderAdapter = {
       completionTokens: data.usage.completion_tokens,
       provider: 'groq',
     }
+  },
+
+  async listModels(apiKey: string): Promise<string[]> {
+    const res = await fetch('https://api.groq.com/openai/v1/models', {
+      headers: { Authorization: `Bearer ${apiKey}` },
+    })
+    if (!res.ok) throw new Error(`Groq models list error ${res.status}`)
+    const data = (await res.json()) as { data: { id: string }[] }
+    return data.data.map((m) => m.id)
   },
 }
